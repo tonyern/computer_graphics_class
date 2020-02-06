@@ -279,21 +279,21 @@ public final class Application
 		int	dy = 132;
 
 		// Chimney is on the left side of the house.
-		drawChimney(gl, dx + 34, dy);
+		drawChimney(gl, dx + 34, dy, 128, 0, 0);
 		// Frame of house.
-		drawFrame(gl, dx, dy);
+		drawFrame(gl, dx, dy, 128, 64, 0);
 		
 		// Window to the left of the door.
-		drawWindow(gl, dx + 141, dy + 127, 20, 20);
+		drawWindow(gl, dx + 141, dy + 127, 20, 20, 255, 255, 128);
 		// Window to the right of the door.
-		drawWindow(gl, dx + 34, dy + 127, 20, 20);
+		drawWindow(gl, dx + 34, dy + 127, 20, 20, 255, 255, 128);
 		
 		// Door is centered of the house.
-		drawDoor(gl, dx + 65, dy);
+		drawDoor(gl, dx + 65, dy, 192, 128, 0);
 		// Window on the door.
-		drawWindow(gl, dx + 85, dy + 65, 15, 15);
+		drawWindow(gl, dx + 85, dy + 65, 15, 15, 255, 255, 128);
 		// Door knob on the door.
-		drawDoorKnob(gl, dx + 95, dy + 35, 4);
+		drawDoorKnob(gl, dx + 95, dy + 35, 4, 255, 255, 128);
 	}
 
 	// Draw the parts of a slightly different house.
@@ -302,14 +302,18 @@ public final class Application
 		int	dx = 1048;
 		int	dy = 132;
 
-		drawChimney(gl,	dx + 30,	dy);
-		drawFrame(gl, dx, dy);
-		drawWindow(gl, dx + 98, dy + 64, 20, 20);
-		drawWindow(gl, dx + 144, dy + 64, 20, 20);
-		drawDoor(gl, dx + 7, dy);
+		drawChimney(gl,	dx + 30, dy, 128, 0, 0);
+		drawFrame(gl, dx, dy, 128, 64, 0);
+		drawWindow(gl, dx + 98, dy + 64, 20, 20, 225, 225, 128);
+		drawWindow(gl, dx + 144, dy + 64, 20, 20, 225, 255, 128);
+		drawDoor(gl, dx + 7, dy, 192, 128, 0);
 	}
 	
-	// Draw the grass.
+	/**
+	 * Creates the grass in a scene when called.
+	 * 
+	 * @param gl OpenGL object
+	 */
 	private void	drawGrass(GL2 gl)
 	{
 		// Set color and fill the grass.
@@ -317,24 +321,66 @@ public final class Application
 		fillRect(gl, 0, 0, 1280, 131);		
 	}
 	
-	// Draw a door knob.
-	private void	drawDoorKnob(GL2 gl, int dx, int dy, int r)
+	/**
+	 * This method draws a filled circle with an outer edge.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param r Radius
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
+	private void	drawDoorKnob(GL2 gl, int dx, int dy, int r, 
+			int redValue, int greenValue, int blueValue)
 	{
 		// Set color and fill the circle.
-		setColor(gl, 255, 255, 128);
+		setColor(gl, redValue, greenValue, blueValue);
 		fillCircle(gl, dx, dy, r);
 		
+		// Set color and fill the edge of the circle.
 		setColor(gl, 0, 0, 0);
 		edgeCircle(gl, dx, dy, r);
 	}
-
-	// Draw entire chimney, not just the visible part. Effect when fill is off?
-	private void	drawChimney(GL2 gl, int dx, int dy)
+	
+	/**
+	 * Draw shades which are just two triangles.
+	 * 
+	 * @param gl
+	 * @param dx
+	 * @param dy
+	 * @param ww
+	 * @param hh
+	 * @param redValue
+	 * @param greenValue
+	 * @param blueValue
+	 */
+	private void	drawShades(GL2 gl, int dx, int dy, int ww, int hh,
+			int redValue, int greenValue, int blueValue)
 	{
-		setColor(gl, 128, 0, 0);				// Firebrick red
+		
+	}
+
+	/**
+	 * Draws a chimney on the scene when called.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
+	private void	drawChimney(GL2 gl, int dx, int dy,
+			int redValue, int greenValue, int blueValue)
+	{
+		// Set color and fill the chimney.
+		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx, dy, 30, 250);
 
-		setColor(gl, 0, 0, 0);					// Black
+		// Black color edge of the chimney.
+		setColor(gl, 0, 0, 0);
 		edgeRect(gl, dx, dy, 30, 250);
 	}
 
@@ -348,33 +394,71 @@ public final class Application
 		new Point(  0, 162),		// roof, left corner
 	};
 
-	// Draw a house frame, given its lower left corner.
-	private void	drawFrame(GL2 gl, int dx, int dy)
+	/**
+	 * Draw a house frame, given its lower left corner.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
+	private void	drawFrame(GL2 gl, int dx, int dy,
+			int redValue, int greenValue, int blueValue)
 	{
-		setColor(gl, 128, 64, 0);				// Medium brown
+		// Set color and fill the house frame.
+		setColor(gl, redValue, greenValue, blueValue);
 		fillPoly(gl, dx, dy, OUTLINE_FRAME);
 
-		setColor(gl, 0, 0, 0);					// Black
+		// Black color edge of the house frame.
+		setColor(gl, 0, 0, 0);
 		edgePoly(gl, dx, dy, OUTLINE_FRAME);
 	}
 
-	// Draw a door, given its lower left corner.
-	private void	drawDoor(GL2 gl, int dx, int dy)
+	/**
+	 * Draws a door on the scene when called.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
+	private void	drawDoor(GL2 gl, int dx, int dy,
+			int redValue, int greenValue, int blueValue)
 	{
-		setColor(gl, 192, 128, 0);				// Light brown
+		// Set color and fill the door.
+		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx, dy, 40, 92);
 
-		setColor(gl, 0, 0, 0);					// Black
+		// Black color edge of the door.
+		setColor(gl, 0, 0, 0);
 		edgeRect(gl, dx, dy, 40, 92);
 	}
 
-	// Draw a window, given its center.
-	private void	drawWindow(GL2 gl, int dx, int dy, int ww, int hh)
+	/**
+	 * Draw a window, given its center.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param ww Width
+	 * @param hh Height
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
+	private void	drawWindow(GL2 gl, int dx, int dy, int ww, int hh,
+			int redValue, int greenValue, int blueValue)
 	{
-		setColor(gl, 255, 255, 128);			// Light yellow
+		// Set window and fill the window.
+		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh);
 
-		setColor(gl, 0, 0, 0);					// Black
+		// Black color edge.
+		setColor(gl, 0, 0, 0);
 		edgeRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh);
 	}
 
