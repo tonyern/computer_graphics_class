@@ -41,7 +41,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
  * The <CODE>Application</CODE> class.<P>
  *
  * @author  Chris Weaver
- * @author  Tony Nguyen (Modified code)
+ * @author  Tony Nguyen
  * @version %I%, %G%
  */
 public final class Application
@@ -166,29 +166,32 @@ public final class Application
 	private void	update(GLAutoDrawable drawable)
 	{
 		k++;									// Advance animation counter
-
-		if (k < 180)							// Don't change for 3s at start
-			return;
-
 	}
 
 	// Render the scene model and display the current animation frame.
 	private void	render(GLAutoDrawable drawable)
 	{
 		GL2	gl = drawable.getGL().getGL2();
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		    // Clear the buffer
-		setProjection(gl);							// Use screen coordinates
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		    // Clear the buffer.
+		setProjection(gl);							// Use screen coordinates.
 
-		// Draw text on screen on top left
-		drawText(drawable);
-
-		// Two houses
-		// TODO Implement house1.
+		// Two houses.
 		drawHouse1(gl);
 		drawHouse2(gl);
 		
-		// Create the grass
+		// Draw fences
+		drawFences(gl);
+		
+		// Create the grass.
 		drawGrass(gl);
+		
+		// Draws a moon using door knob circle method.
+		drawDoorKnob(gl, 1048, 600, 60, 255, 255, 255);
+		// This will make the moon a crescent shape.
+		drawDoorKnob(gl, 1070, 620, 60, 0, 0, 0);
+		
+		// Draws a flag pole with a flag and ropes.
+		drawFlag(gl, 600, 469, 185, 110, 169, 0, 0);
 	}
 
 	//**********************************************************************
@@ -285,8 +288,17 @@ public final class Application
 		
 		// Window to the left of the door.
 		drawWindow(gl, dx + 141, dy + 127, 20, 20, 255, 255, 128);
-		// Window to the right of the door.
+		
+		// Window to the right of the door with shades.
 		drawWindow(gl, dx + 34, dy + 127, 20, 20, 255, 255, 128);
+		
+		// Window shades to the left of the door.
+		drawShades(gl, dx + 14, dy + 107, 20, 40, 118, 219, 219, 0);
+		drawShades(gl, dx + 33, dy + 107, 20, 40, 118, 219, 219, 1);
+		
+		// Window shades to the right of the door.
+		drawShades(gl, dx + 121, dy + 107, 20, 40, 118, 219, 219, 0);
+		drawShades(gl, dx + 140, dy + 107, 20, 40, 118, 219, 219, 1);
 		
 		// Door is centered of the house.
 		drawDoor(gl, dx + 65, dy, 192, 128, 0);
@@ -302,11 +314,29 @@ public final class Application
 		int	dx = 1048;
 		int	dy = 132;
 
-		drawChimney(gl,	dx + 30, dy, 128, 0, 0);
+		// Chimney is on the right side of the house.
+		drawChimney(gl,	dx + 120, dy, 40, 100, 90);
+		// Frame of the house.
 		drawFrame(gl, dx, dy, 128, 64, 0);
+		// House has a divided roof.
+		
+		// Windows on the house.
 		drawWindow(gl, dx + 98, dy + 64, 20, 20, 225, 225, 128);
 		drawWindow(gl, dx + 144, dy + 64, 20, 20, 225, 255, 128);
+		
+		// Shades on the left window.
+		drawShades(gl, dx + 78, dy + 44, 20, 40, 118, 219, 219, 0);
+		drawShades(gl, dx + 97, dy + 44, 20, 40, 118, 219, 219, 1);
+		
+		// Shades on the right window.
+		drawShades(gl, dx + 123, dy + 44, 20, 40, 118, 219, 219, 0);
+		drawShades(gl, dx + 143, dy + 44, 20, 40, 118, 219, 219, 1);
+		
+		// Door on the house with a door knob.
 		drawDoor(gl, dx + 7, dy, 192, 128, 0);
+		drawDoorKnob(gl, dx + 15, dy + 35, 4, 255, 255, 128);
+		// Window on the door.
+		drawDoorKnob(gl, dx + 25, dy + 70, 15, 255, 255, 128);
 	}
 	
 	/**
@@ -345,7 +375,7 @@ public final class Application
 	}
 	
 	/**
-	 * Draw shades which are just two triangles.
+	 * Draws a flag with a pole and rope.
 	 * 
 	 * @param gl
 	 * @param dx
@@ -356,10 +386,59 @@ public final class Application
 	 * @param greenValue
 	 * @param blueValue
 	 */
-	private void	drawShades(GL2 gl, int dx, int dy, int ww, int hh,
+	private void	drawFlag(GL2 gl, int dx, int dy, int ww, int hh,
 			int redValue, int greenValue, int blueValue)
 	{
+		// Start drawing the flag.
+		setColor(gl, redValue, greenValue, blueValue);
+		fillRect(gl, dx, dy, ww, hh);
+		setColor(gl, 0, 0, 0);
+		edgeRect(gl, dx, dy, ww, hh, 1.0f);
 		
+		// Draw the flag pole.
+		setColor(gl, 117, 117, 117);
+		fillRect(gl, 595, 100, 10, 500);
+		drawDoorKnob(gl, dx, dy + 140, 10, 178, 166, 0);
+		
+		// Draw the rope.
+		// TODO Figure out how to draw a rope.
+	}
+	
+	/**
+	 * Draws a standard yellow star.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-Coordinate
+	 * @param dy Y-Coordinate
+	 */
+	private void	drawStar(GL2 gl, int dx, int dy)
+	{
+		setColor(gl, 255, 255, 4);
+	}
+	
+	/**
+	 * Draw shades which are just two triangles.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param ww Width
+	 * @param hh Height
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 * @param rightOrLeft 0 or 1. 0 denotes left while 1 denotes right
+	 */
+	private void	drawShades(GL2 gl, int dx, int dy, int ww, int hh,
+			int redValue, int greenValue, int blueValue, int rightOrLeft)
+	{
+		// Set color and fill the shades.
+		setColor(gl, redValue, greenValue, blueValue);
+		fillTriangle(gl, dx, dy, ww, hh, rightOrLeft);
+		
+		// Black color edge of the shades.
+		setColor(gl, 0, 0, 0);
+		edgeTriangle(gl, dx, dy, ww, hh, rightOrLeft); 
 	}
 
 	/**
@@ -381,7 +460,7 @@ public final class Application
 
 		// Black color edge of the chimney.
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx, dy, 30, 250);
+		edgeRect(gl, dx, dy, 30, 250, 1.0f);
 	}
 
 	// Define five corners of a house frame that is shorter on the left side.
@@ -428,14 +507,14 @@ public final class Application
 	 */
 	private void	drawDoor(GL2 gl, int dx, int dy,
 			int redValue, int greenValue, int blueValue)
-	{
+	{	
 		// Set color and fill the door.
 		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx, dy, 40, 92);
 
 		// Black color edge of the door.
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx, dy, 40, 92);
+		edgeRect(gl, dx, dy, 40, 92, 1.0f);
 	}
 
 	/**
@@ -457,9 +536,9 @@ public final class Application
 		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh);
 
-		// Black color edge.
+		// Black color edge.drawShades(gl, dx + 14, dy + 107, 20, 40, 118, 219, 219, 0);
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh);
+		edgeRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh, 1.0f);
 	}
 
 	//**********************************************************************
@@ -545,7 +624,7 @@ public final class Application
 		new Point(  0, 102),		// peak, left
 	};
 
-	// Definf four corners of a fence board that is shorter on the right side.
+	// Define four corners of a fence board that is shorter on the right side.
 	private static final Point[]	OUTLINE_BOARD_R = new Point[]
 	{
 		new Point(  0,   0),		// base, left
@@ -576,8 +655,12 @@ public final class Application
 
 	private static final int		SIDES_KITE = 18;
 	private static final double	ANGLE_KITE = 2.0 * Math.PI / SIDES_KITE;
-
-	// Draws a kite consisting of two fans, one upper blue, one lower red.
+	
+	/**
+	 * Draws a kite consisting of two fans, one upper blue, one lower red.
+	 * 
+	 * @param gl OpenGL object
+	 */
 	private void	drawKite(GL2 gl)
 	{
 		int		cx = 956;
@@ -594,7 +677,7 @@ public final class Application
 		double		bstep = (bmax - bmin) / fans;
 
 		// Fill and edge the lower red fan
-		fillKiteFan(gl, cx, cy, fans, r, bmin, bstep);
+		fillKiteFan(gl, cx, cy, fans, r, bmin, bstep, 224, 80, 48);
 		edgeKiteFan(gl, cx, cy, fans, r, bmin, bstep);
 
 		for (int i=0; i<fans; i++)
@@ -606,12 +689,26 @@ public final class Application
 			edgeKiteBlade(gl, cx, cy, r, a, a + astep);
 		}
 	}
-
-	// Fills an entire kite fan using a TRIANGLE_FAN.
+	
+	/**
+	 * Fills an entire kite fan using a TRIANGLE_FAN.
+	 * 
+	 * @param gl OpenGL object
+	 * @param cx X-coordinate
+	 * @param cy Y-coordinate
+	 * @param fans How much division on the triangle
+	 * @param r Radius of the triangle
+	 * @param min Minimum value for steps
+	 * @param step How much steps to take
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
+	 */
 	private void	fillKiteFan(GL2 gl, int cx, int cy, int fans, int r,
-								double min, double step)
+								double min, double step, 
+								int redValue, int greenValue, int blueValue)
 	{
-		setColor(gl, 224, 80, 48);				// Bright red
+		setColor(gl, redValue, greenValue, blueValue);
 
 		gl.glBegin(GL2.GL_TRIANGLE_FAN);
 
@@ -689,8 +786,7 @@ public final class Application
 	//**********************************************************************
 	// Private Methods (Utility Functions)
 	//**********************************************************************
-
-	// Sets color, normalizing r, g, b, a values from max 255 to 1.0.
+	
 	private void	setColor(GL2 gl, int r, int g, int b, int a)
 	{
 		gl.glColor4f(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
@@ -701,8 +797,16 @@ public final class Application
 	{
 		setColor(gl, r, g, b, 255);
 	}
-
-	// Fills a rectangle having lower left corner at (x,y) and dimensions (w,h).
+	
+	/**
+	 * Fills a rectangle having lower left corner at (x,y) and dimensions (w,h).
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate starting
+	 * @param y Y-coordinate starting
+	 * @param w Width
+	 * @param h Height
+	 */
 	private void	fillRect(GL2 gl, int x, int y, int w, int h)
 	{
 		gl.glBegin(GL2.GL_POLYGON);
@@ -715,8 +819,17 @@ public final class Application
 		gl.glEnd();
 	}
 	
-	// Edges a rectangle having lower left corner at (x,y) and dimensions (w,h).
-	private void	edgeRect(GL2 gl, int x, int y, int w, int h)
+	/**
+	 * Edges a rectangle having lower left corner at (x,y) and dimensions (w,h).
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate starting
+	 * @param y Y-coordinate starting
+	 * @param w Width
+	 * @param h Height
+	 * @param thickness Line thickness of the edges
+	 */
+	private void	edgeRect(GL2 gl, int x, int y, int w, int h, float thickness)
 	{
 		gl.glLineWidth(thickline);
 
@@ -729,11 +842,85 @@ public final class Application
 
 		gl.glEnd();
 
+		gl.glLineWidth(thickness);
+	}
+	
+	/**
+	 * Fills in a triangle given (x,y) coordinates given base and height.
+	 * Creates an upside down triangle.
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param base Base of the triangle
+	 * @param height Height of the triangle
+	 * @param rightOrLeft 0 or 1. 0 denotes left while 1 denotes right
+	 */
+	private void	fillTriangle(GL2 gl, int x, int y, int base, int height,
+			int rightOrLeft)
+	{
+		gl.glBegin(GL2.GL_TRIANGLES);
+		
+		if (rightOrLeft == 0)
+		{
+			gl.glVertex2f(x+base, y+height);
+			gl.glVertex2f(x, y+height);
+			gl.glVertex2f(x+0, y+0);
+		}
+		else if (rightOrLeft == 1)
+		{
+			gl.glVertex2f(x+0, y+height);
+			gl.glVertex2f(x+base, y+height);
+			gl.glVertex2f(x+base, y+0);
+		}
+		
+		gl.glEnd();
+	}
+	
+	/**
+	 * Fills in a triangle given (x,y) coordinates given base and height.
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate
+	 * @param y Y-coordinate
+	 * @param base Base of the triangle
+	 * @param height Height of the triangle
+	 * @param rightOrLeft 0 or 1. 0 denotes left while 1 denotes right
+	 */
+	private void	edgeTriangle(GL2 gl, int x, int y, int base, int height,
+			int rightOrLeft)
+	{
+		gl.glLineWidth(thickline);
+
+		gl.glBegin(GL.GL_LINE_LOOP);
+
+		if (rightOrLeft == 0)
+		{
+			gl.glVertex2f(x+base, y+height);
+			gl.glVertex2f(x, y+height);
+			gl.glVertex2f(x+0, y+0);
+		}
+		else if (rightOrLeft == 1)
+		{
+			gl.glVertex2f(x+0, y+height);
+			gl.glVertex2f(x+base, y+height);
+			gl.glVertex2f(x+base, y+0);
+		}
+		
+		gl.glEnd();
+
 		gl.glLineWidth(1.0f);
 	}
 	
-	// Fills in a circle having a center a (x,y) and a radius r.
-	// Code came from a YouTube video https://www.youtube.com/watch?v=NnutNkde5TE
+	/**
+	 * Fills in a circle having a center a (x,y) and a radius r.
+	 * Code came from a YouTube video https://www.youtube.com/watch?v=NnutNkde5TE
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate starting
+	 * @param y Y-coordinate starting
+	 * @param r Radius of the circle
+	 */
 	private void	fillCircle(GL2 gl, int x, int y, int r)
 	{
 		gl.glBegin(GL2.GL_POLYGON);
@@ -752,7 +939,14 @@ public final class Application
 		gl.glEnd();
 	}
 	
-	// Edges of the circle with coordinates (x,y) and a radius r.
+	/**
+	 * Edges of the circle with coordinates (x,y) and a radius r.
+	 * 
+	 * @param gl OpenGL object
+	 * @param x X-coordinate starting
+	 * @param y Y-coordinate starting
+	 * @param r Radius of the circle
+	 */
 	private void	edgeCircle(GL2 gl, int x, int y, int r)
 	{
 		gl.glLineWidth(thickline);
@@ -775,7 +969,14 @@ public final class Application
 		gl.glLineWidth(1.0f);
 	}
 
-	// Fills a polygon defined by a starting point and a sequence of offsets.
+	/**
+	 * Fills a polygon defined by a starting point and a sequence of offsets.
+	 * 
+	 * @param gl OpenGL object
+	 * @param startx X-coordinate starting
+	 * @param starty Y-coordinate starting
+	 * @param offsets How much to offset
+	 */
 	private void	fillPoly(GL2 gl, int startx, int starty, Point[] offsets)
 	{
 		gl.glBegin(GL2.GL_POLYGON);
@@ -786,7 +987,14 @@ public final class Application
 		gl.glEnd();
 	}
 
-	// Edges a polygon defined by a starting point and a sequence of offsets.
+	/**
+	 * Edges a polygon defined by a starting point and a sequence of offsets.
+	 * 
+	 * @param gl OpenGL object
+	 * @param startx X-coordinate starting
+	 * @param starty Y-coordinate starting
+	 * @param offsets How much to offset
+	 */
 	private void	edgePoly(GL2 gl, int startx, int starty, Point[] offsets)
 	{
 		gl.glLineWidth(thickline);
