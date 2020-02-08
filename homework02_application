@@ -173,6 +173,11 @@ public final class Application
 	{
 		GL2	gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		    // Clear the buffer.
+		
+		setProjectionGalaxy(gl);
+		setColor(gl, 213, 210, 210);
+		drawLorenzAttractor(gl);
+		
 		setProjection(gl);							// Use screen coordinates.
 
 		// Two houses.
@@ -186,12 +191,12 @@ public final class Application
 		drawGrass(gl);
 		
 		// Draws a moon using door knob circle method.
-		drawDoorKnob(gl, 1048, 600, 60, 255, 255, 255);
+		drawDoorKnob(gl, 1048, 600, 60, 235, 235, 235);
 		// This will make the moon a crescent shape.
 		drawDoorKnob(gl, 1070, 620, 60, 0, 0, 0);
 		
 		// Draws a flag pole with a flag and ropes.
-		drawFlag(gl, 600, 469, 185, 110, 169, 0, 0);
+		drawFlag(gl, 600, 469, 185, 110, 255, 255, 255);
 	}
 
 	//**********************************************************************
@@ -254,8 +259,8 @@ public final class Application
 		double		sigma = 10.0;				// Constant for updating x
 		double		rho = 28.0;				// Constant for updating y
 		double		beta = 8.0 / 3.0;			// Constant for updating z
-		double		lx = 0.1;					// Initial x coordinate
-		double		ly = 0.0;					// Initial y coordinate
+		double		lx = 0.5;					// Initial x coordinate
+		double		ly = 0.1;					// Initial y coordinate
 		double		lz = 0.0;					// Initial z coordinate
 
 		for (int i = 0; i < 9000; i++)
@@ -268,7 +273,7 @@ public final class Application
 			ly = lly;
 			lz = llz;
 
-			gl.glVertex2d(lx / 30.0, ly / 30.0);
+			gl.glVertex2d(lx / 70.0, ly / 70.0);
 		}
 
 		gl.glEnd();
@@ -377,14 +382,14 @@ public final class Application
 	/**
 	 * Draws a flag with a pole and rope.
 	 * 
-	 * @param gl
-	 * @param dx
-	 * @param dy
-	 * @param ww
-	 * @param hh
-	 * @param redValue
-	 * @param greenValue
-	 * @param blueValue
+	 * @param gl OpenGL object
+	 * @param dx X-coordinate
+	 * @param dy Y-coordinate
+	 * @param ww Width
+	 * @param hh Height
+	 * @param redValue Red color scheme
+	 * @param greenValue Green color scheme
+	 * @param blueValue Blue color scheme
 	 */
 	private void	drawFlag(GL2 gl, int dx, int dy, int ww, int hh,
 			int redValue, int greenValue, int blueValue)
@@ -395,13 +400,43 @@ public final class Application
 		setColor(gl, 0, 0, 0);
 		edgeRect(gl, dx, dy, ww, hh, 1.0f);
 		
+		drawDoorKnob(gl, dx + 95, dy + 55, 35, 169, 0, 0);
+		
 		// Draw the flag pole.
 		setColor(gl, 117, 117, 117);
 		fillRect(gl, 595, 100, 10, 500);
-		drawDoorKnob(gl, dx, dy + 140, 10, 178, 166, 0);
+		drawDoorKnob(gl, dx, dy + 140, 15, 178, 166, 0);
 		
 		// Draw the rope.
-		// TODO Figure out how to draw a rope.
+		setColor(gl, 203, 149, 0);
+		drawRope(gl, 605, 578, 610, 540);
+		
+		setColor(gl, 203, 149, 0);
+		drawRope(gl, 610, 540, 610, 200);
+		
+		setColor(gl, 203, 149, 0);
+		drawRope(gl, 610, 200, 605, 190);
+	}
+	
+	/**
+	 * Draws a sequence of connect lines.
+	 * 
+	 * @param gl OpenGL object
+	 * @param x1 Starting x position
+	 * @param y1 Starting y position
+	 * @param x2 Ending x position
+	 * @param y2 Ending y position
+	 */
+	private void	drawRope(GL2 gl, int x1, int y1, int x2, int y2)
+	{
+		gl.glLineWidth(2.0f);
+		gl.glBegin(GL.GL_LINES);
+		
+		// Draw lines given points.
+		gl.glVertex2d(x1, y1);
+		gl.glVertex2d(x2, y2);
+		
+		gl.glEnd();
 	}
 	
 	/**
