@@ -174,8 +174,9 @@ public final class Application
 		GL2	gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		    // Clear the buffer.
 		
+		// Background galaxy.
 		setProjectionGalaxy(gl);
-		setColor(gl, 213, 210, 210);
+		setColor(gl, 172, 172, 172);
 		drawLorenzAttractor(gl);
 		
 		setProjection(gl);							// Use screen coordinates.
@@ -259,8 +260,8 @@ public final class Application
 		double		sigma = 10.0;				// Constant for updating x
 		double		rho = 28.0;				// Constant for updating y
 		double		beta = 8.0 / 3.0;			// Constant for updating z
-		double		lx = 0.5;					// Initial x coordinate
-		double		ly = 0.1;					// Initial y coordinate
+		double		lx = 5.0;					// Initial x coordinate
+		double		ly = 1.0;					// Initial y coordinate
 		double		lz = 0.0;					// Initial z coordinate
 
 		for (int i = 0; i < 9000; i++)
@@ -280,7 +281,6 @@ public final class Application
 	}
 
 	// Draw house1 which is the on the left side of the scene.
-	// TODO Work on this house.
 	private void	drawHouse1(GL2 gl)
 	{
 		int	dx = 108;
@@ -311,6 +311,8 @@ public final class Application
 		drawWindow(gl, dx + 85, dy + 65, 15, 15, 255, 255, 128);
 		// Door knob on the door.
 		drawDoorKnob(gl, dx + 95, dy + 35, 4, 255, 255, 128);
+		
+		drawStar(gl, dx + 70, dy + 170);
 	}
 
 	// Draw the parts of a slightly different house.
@@ -342,6 +344,8 @@ public final class Application
 		drawDoorKnob(gl, dx + 15, dy + 35, 4, 255, 255, 128);
 		// Window on the door.
 		drawDoorKnob(gl, dx + 25, dy + 70, 15, 255, 255, 128);
+		
+		drawStar(gl, dx + 68, dy + 170);
 	}
 	
 	/**
@@ -398,7 +402,7 @@ public final class Application
 		setColor(gl, redValue, greenValue, blueValue);
 		fillRect(gl, dx, dy, ww, hh);
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx, dy, ww, hh, 1.0f);
+		edgeRect(gl, dx, dy, ww, hh);
 		
 		drawDoorKnob(gl, dx + 95, dy + 55, 35, 169, 0, 0);
 		
@@ -437,18 +441,6 @@ public final class Application
 		gl.glVertex2d(x2, y2);
 		
 		gl.glEnd();
-	}
-	
-	/**
-	 * Draws a standard yellow star.
-	 * 
-	 * @param gl OpenGL object
-	 * @param dx X-Coordinate
-	 * @param dy Y-Coordinate
-	 */
-	private void	drawStar(GL2 gl, int dx, int dy)
-	{
-		setColor(gl, 255, 255, 4);
 	}
 	
 	/**
@@ -495,7 +487,39 @@ public final class Application
 
 		// Black color edge of the chimney.
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx, dy, 30, 250, 1.0f);
+		edgeRect(gl, dx, dy, 30, 250);
+	}
+	
+	private static final Point[]	OUTLINE_STAR = new Point[]
+	{			
+		new Point(0, 18),
+		new Point(15, 18),
+		new Point(18, 0),
+		new Point(27, 18),
+		new Point(42, 18),
+		new Point(33, 27),
+		new Point(36, 42),
+		new Point(21, 36),
+		new Point(6, 42),
+		new Point(12, 27)
+	};
+	
+	/**
+	 * Draws a standard yellow star.
+	 * 
+	 * @param gl OpenGL object
+	 * @param dx X-Coordinate
+	 * @param dy Y-Coordinate
+	 */
+	private void	drawStar(GL2 gl, int dx, int dy)
+	{
+		// Set color and fill the star.
+		setColor(gl, 255, 255, 4);
+		fillPoly(gl, dx, dy, OUTLINE_STAR);
+
+		// Black color edge of the house frame.
+		setColor(gl, 0, 0, 0);
+		edgePoly(gl, dx, dy, OUTLINE_STAR);
 	}
 
 	// Define five corners of a house frame that is shorter on the left side.
@@ -549,7 +573,7 @@ public final class Application
 
 		// Black color edge of the door.
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx, dy, 40, 92, 1.0f);
+		edgeRect(gl, dx, dy, 40, 92);
 	}
 
 	/**
@@ -573,7 +597,7 @@ public final class Application
 
 		// Black color edge.drawShades(gl, dx + 14, dy + 107, 20, 40, 118, 219, 219, 0);
 		setColor(gl, 0, 0, 0);
-		edgeRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh, 1.0f);
+		edgeRect(gl, dx - ww, dy - hh, 2 * ww, 2 * hh);
 	}
 
 	//**********************************************************************
@@ -583,22 +607,34 @@ public final class Application
 	private void	drawFences(GL2 gl)
 	{
 		// Draw a zigzag fence with 8 boards
-		fillFenceStrip(gl, 856, 132, 8);
-		edgeFenceStrip(gl, 856, 132, 8);
+		fillFenceStrip(gl, 283, 132, 8);
+		edgeFenceStrip(gl, 283, 132, 8);
 
-		// Draw a zigzag fence with 2 boards
-		fillFenceStrip(gl, 1224, 132, 2);
-		edgeFenceStrip(gl, 1224, 132, 2);
+		// Draw a zigzag fence with 4 boards
+		fillFenceStrip(gl, 12, 132, 4);
+		edgeFenceStrip(gl, 12, 132, 4);
 
-		// Draw a rightward-increasing jagged fence with 4 boards
-		fillFenceBoard(gl, false,  290, 132);
-		edgeFenceBoard(gl, false,  290, 132);
-		fillFenceBoard(gl, false,  314, 132);
-		edgeFenceBoard(gl, false,  314, 132);
-		fillFenceBoard(gl, false,  338, 132);
-		edgeFenceBoard(gl, false,  338, 132);
-		fillFenceBoard(gl, false,  362, 132);
-		edgeFenceBoard(gl, false,  362, 132);
+		// Draw a rightward-increasing jagged fence
+		fillFenceBoard(gl, false,  1024, 132);
+		edgeFenceBoard(gl, false,  1024, 132);
+		fillFenceBoard(gl, false,  1001, 132);
+		edgeFenceBoard(gl, false,  1001, 132);
+		fillFenceBoard(gl, false,  978, 132);
+		edgeFenceBoard(gl, false,  978, 132);
+		fillFenceBoard(gl, false,  955, 132);
+		edgeFenceBoard(gl, false,  955, 132);
+		fillFenceBoard(gl, false,  932, 132);
+		edgeFenceBoard(gl, false,  932, 132);
+		fillFenceBoard(gl, false,  909, 132);
+		edgeFenceBoard(gl, false,  909, 132);
+		fillFenceBoard(gl, false,  886, 132);
+		edgeFenceBoard(gl, false,  886, 132);
+		fillFenceBoard(gl, false,  863, 132);
+		edgeFenceBoard(gl, false,  863, 132);
+		fillFenceBoard(gl, false,  1224, 132);
+		edgeFenceBoard(gl, false,  1224, 132);
+		fillFenceBoard(gl, false,  1247, 132);
+		edgeFenceBoard(gl, false,  1247, 132);
 	}
 
 	// Fills a left-to-right sequence of fence boards using a QUAD_STRIP.
@@ -862,9 +898,8 @@ public final class Application
 	 * @param y Y-coordinate starting
 	 * @param w Width
 	 * @param h Height
-	 * @param thickness Line thickness of the edges
 	 */
-	private void	edgeRect(GL2 gl, int x, int y, int w, int h, float thickness)
+	private void	edgeRect(GL2 gl, int x, int y, int w, int h)
 	{
 		gl.glLineWidth(thickline);
 
@@ -877,7 +912,7 @@ public final class Application
 
 		gl.glEnd();
 
-		gl.glLineWidth(thickness);
+		gl.glLineWidth(1.0f);
 	}
 	
 	/**
