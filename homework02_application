@@ -20,7 +20,7 @@
 //
 //******************************************************************************
 
-package edu.ou.cs.cg.assignment.homework02;
+package edu.ou.cs.cg.assignment.solution02;
 
 //import java.lang.*;
 import java.awt.*;
@@ -44,7 +44,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
  * @author  Tony Nguyen
  * @version %I%, %G%
  */
-public final class Application
+public final class TestApplication
 	implements GLEventListener, Runnable
 {
 	//**********************************************************************
@@ -73,14 +73,14 @@ public final class Application
 
 	public static void	main(String[] args)
 	{
-		SwingUtilities.invokeLater(new Application(args));
+		SwingUtilities.invokeLater(new TestApplication(args));
 	}
 
 	//**********************************************************************
 	// Constructors and Finalizer
 	//**********************************************************************
 
-	public Application(String[] args)
+	public TestApplication(String[] args)
 	{
 	}
 
@@ -94,7 +94,7 @@ public final class Application
 		GLCapabilities	capabilities = new GLCapabilities(profile);
 		GLCanvas		canvas = new GLCanvas(capabilities);	// Single-buffer
 		//GLJPanel		canvas = new GLJPanel(capabilities);	// Double-buffer
-		JFrame			frame = new JFrame("The World");
+		JFrame			frame = new JFrame("Japan The Empire");
 
 		// Specify the starting width and height of the canvas itself
 		canvas.setPreferredSize(new Dimension(1280, 720));
@@ -174,6 +174,11 @@ public final class Application
 		GL2	gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);		    // Clear the buffer.
 		
+		// Background sky.
+		drawSky(gl);
+		
+		drawMoon(gl);
+		
 		// Background galaxy.
 		setProjectionGalaxy(gl);
 		setColor(gl, 172, 172, 172);
@@ -192,9 +197,9 @@ public final class Application
 		drawGrass(gl);
 		
 		// Draws a moon using door knob circle method.
-		drawDoorKnob(gl, 1048, 600, 60, 235, 235, 235);
+		//drawDoorKnob(gl, 1048, 600, 60, 235, 235, 235);
 		// This will make the moon a crescent shape.
-		drawDoorKnob(gl, 1070, 620, 60, 0, 0, 0);
+		//drawDoorKnob(gl, 1070, 620, 60, 0, 0, 0);
 		
 		// Draws a flag pole with a flag and ropes.
 		drawFlag(gl, 600, 469, 185, 110, 255, 255, 255);
@@ -279,6 +284,90 @@ public final class Application
 
 		gl.glEnd();
 	}
+	
+	/**
+	 * Draws the gradients for the night sky.
+	 * 
+	 * @param gl OpenGL object.
+	 */
+	private void	drawSky(GL2 gl)
+	{
+		gl.glBegin(GL2.GL_QUADS);
+
+		setColor(gl, 128, 112, 80);			// Opaque gold on horizon
+		gl.glVertex2i(0, 131);
+		gl.glVertex2i(1280, 131);
+		setColor(gl, 32, 48, 96, 64);			// Translucent dark blue at top
+		gl.glVertex2i(1280, 720);
+		gl.glVertex2i(0, 720);
+
+		gl.glEnd();
+	}
+	
+	private static final int		SIDES_MOON = 18;
+	private static final double	ANGLE_MOON = 2.0 * Math.PI / SIDES_MOON;
+
+	/**
+	 * Draws the moon.
+	 * 
+	 * @param gl OpenGL object.
+	 */
+	private void	drawMoon(GL2 gl)
+	{
+		double		theta = 0.20 * ANGLE_MOON;
+		int		cx = 94;
+		int		cy = 720 - 92;
+		int		r = 59;
+
+		// Fill the whole moon in white
+		gl.glBegin(GL.GL_TRIANGLE_FAN);
+
+		setColor(gl, 255, 255, 255);			// White
+		gl.glVertex2d(cx, cy);
+
+		for (int i=0; i<SIDES_MOON+1; i++)		// 18 sides
+		{
+			gl.glVertex2d(cx + r * Math.cos(theta), cy + r * Math.sin(theta));
+			theta += ANGLE_MOON;
+		}
+
+		gl.glEnd();
+
+		// Fill the outside shadow in dark bluish gray
+		theta = -1.80 * ANGLE_MOON;
+
+		gl.glBegin(GL.GL_TRIANGLE_FAN);
+
+		setColor(gl, 64, 64, 80);
+		gl.glVertex2d(cx, cy);
+
+		for (int i=0; i<8; i++)				// 7 sides
+		{
+			gl.glVertex2d(cx + r * Math.cos(theta), cy + r * Math.sin(theta));
+			theta += ANGLE_MOON;
+		}
+
+		gl.glEnd();
+
+		// Fill the inside shadow in dark bluish gray
+		theta = 1.50 * ANGLE_MOON;
+		cx = 128;
+		cy = 650;
+		theta = 7.2 * ANGLE_MOON;
+
+		gl.glBegin(GL.GL_TRIANGLE_FAN);
+
+		setColor(gl, 64, 64, 80);
+		gl.glVertex2d(cx, cy);
+
+		for (int i=0; i<8; i++)				// 7 sides
+		{
+			gl.glVertex2d(cx + r * Math.cos(theta), cy + r * Math.sin(theta));
+			theta += ANGLE_MOON;
+		}
+
+		gl.glEnd();
+	}
 
 	// Draw house1 which is the on the left side of the scene.
 	private void	drawHouse1(GL2 gl)
@@ -312,7 +401,7 @@ public final class Application
 		// Door knob on the door.
 		drawDoorKnob(gl, dx + 95, dy + 35, 4, 255, 255, 128);
 		
-		drawStar(gl, dx + 70, dy + 170);
+		drawHouseStar(gl, dx + 87, dy + 200);
 	}
 
 	// Draw the parts of a slightly different house.
@@ -345,7 +434,7 @@ public final class Application
 		// Window on the door.
 		drawDoorKnob(gl, dx + 25, dy + 70, 15, 255, 255, 128);
 		
-		drawStar(gl, dx + 68, dy + 170);
+		drawHouseStar(gl, dx + 87, dy + 200);
 	}
 	
 	/**
@@ -490,36 +579,29 @@ public final class Application
 		edgeRect(gl, dx, dy, 30, 250);
 	}
 	
-	private static final Point[]	OUTLINE_STAR = new Point[]
-	{			
-		new Point(0, 18),
-		new Point(15, 18),
-		new Point(18, 0),
-		new Point(27, 18),
-		new Point(42, 18),
-		new Point(33, 27),
-		new Point(36, 42),
-		new Point(21, 36),
-		new Point(6, 42),
-		new Point(12, 27)
-	};
-	
 	/**
-	 * Draws a standard yellow star.
+	 * Draws star on house.
 	 * 
-	 * @param gl OpenGL object
-	 * @param dx X-Coordinate
-	 * @param dy Y-Coordinate
+	 * @param gl OpenGL object.
+	 * @param cx X-Coordinate.
+	 * @param cy Y-Coordinate.
 	 */
-	private void	drawStar(GL2 gl, int dx, int dy)
+	private void	drawHouseStar(GL2 gl, int cx, int cy)
 	{
-		// Set color and fill the star.
-		setColor(gl, 255, 255, 4);
-		fillPoly(gl, dx, dy, OUTLINE_STAR);
+		double	theta = 0.5 * Math.PI;
 
-		// Black color edge of the house frame.
+		setColor(gl, 255, 255, 0);
+		gl.glBegin(GL.GL_TRIANGLE_FAN);
+		gl.glVertex2d(cx, cy);
+		doStarVertices(gl, cx, cy, 5, 20.0, 8.0);
+		gl.glVertex2d(cx + 20 * Math.cos(theta), cy + 20 * Math.sin(theta));
+		gl.glEnd();
+
 		setColor(gl, 0, 0, 0);
-		edgePoly(gl, dx, dy, OUTLINE_STAR);
+		gl.glBegin(GL.GL_LINE_STRIP);
+		doStarVertices(gl, cx, cy, 5, 20.0, 8.0);
+		gl.glVertex2d(cx + 20 * Math.cos(theta), cy + 20 * Math.sin(theta));
+		gl.glEnd();
 	}
 
 	// Define five corners of a house frame that is shorter on the left side.
@@ -1077,6 +1159,31 @@ public final class Application
 		gl.glEnd();
 
 		gl.glLineWidth(1.0f);
+	}
+	
+	/**
+	 * Draws points on the star.
+	 * 
+	 * @param gl OpenGL object.
+	 * @param cx X-Coordinate.
+	 * @param cy Y-Coordinate.
+	 * @param sides Number of sides.
+	 * @param r1
+	 * @param r2
+	 */
+	private void	doStarVertices(GL2 gl, int cx, int cy, int sides, double r1, double r2)
+	{
+		double	delta = Math.PI / sides;
+		double	theta = 0.5 * Math.PI;
+		
+		for (int i=0; i<sides; i++)
+		{
+			gl.glVertex2d(cx + r1 * Math.cos(theta), cy + r1 * Math.sin(theta));
+			theta += delta;
+			
+			gl.glVertex2d(cx + r2 * Math.cos(theta), cy + r2 * Math.sin(theta));
+			theta += delta;
+		}
 	}
 }
 
