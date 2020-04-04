@@ -73,9 +73,7 @@ public final class View
 	private final MouseHandler		mouseHandler;
 
 	// TODO: YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
-	// List of names.
-	//private final String[] names;
-	//private final ArrayList<String> individualNames;
+	private final ArrayList<Deque<Point2D.Double>> visibleNodes;
 	
 	//**********************************************************************
 	// Constructors and Finalize
@@ -93,15 +91,7 @@ public final class View
 		model = new Model(this);
 
 		// TODO: INITIALIZE YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
-		
-		/*// List of all names.
-		names = Network.getAllNames();
-		
-		individualNames = new ArrayList<String>();
-		for (int i = 0; i < names.length; i++)
-		{
-			individualNames.add(names[i]);
-		}*/
+		visibleNodes = new ArrayList<Deque<Point2D.Double>>();
 		
 		// Initialize controller (interaction handlers)
 		keyHandler = new KeyHandler(this, model);
@@ -130,16 +120,6 @@ public final class View
 	{
 		return h;
 	}
-	
-	/*public int	getNameListSize()
-	{
-		return individualNames.size();
-	}
-	
-	public ArrayList<String> getIndividualNames()
-	{
-		return individualNames;
-	}*/
 
 	//**********************************************************************
 	// Override Methods (GLEventListener)
@@ -232,29 +212,6 @@ public final class View
 		// All names not in the node appearing in the lower left-hand corner.
 		renderer.setColor(1.0f, 1.0f, 0.0f, 1.0f);
 		
-		/*// Making sure array names has elements in it. If not, then display "Empty List."
-		if (!individualNames.isEmpty())
-		{
-			// Checking edge cases.
-			if (model.getNameCycle() == individualNames.size())
-			{
-				if (!(individualNames.get(model.getNameCycle() - 1) == null))
-				{
-					renderer.draw(individualNames.get(model.getNameCycle() - 1), 2, 30);
-					model.decreaseNameCycle();
-				}
-			}
-			else if (!(individualNames.get(model.getNameCycle()) == null))
-			{
-				renderer.draw(individualNames.get(model.getNameCycle()), 2, 30);
-			}
-		}
-		else
-		{
-			renderer.draw("Empty List", 2, 30);
-		}*/
-		
-		
 		// Making sure array names has elements in it. If not, then display "Empty List."
 		if (!model.getIndividualNames().isEmpty())
 		{
@@ -276,7 +233,6 @@ public final class View
 		{
 			renderer.draw("Empty List", 2, 30);
 		}
-		
 
 		renderer.endRendering();
 	}
@@ -374,14 +330,35 @@ public final class View
 	// Draw the social network nodes that are currently inserted/visible.
 	private void	drawNodes(GL2 gl)
 	{
-		// TODO: Check ArrayList<String> nodes.
-		//int red = Network.getColor(names[model.getNameCycle()]).getRed();
-		//int green = Network.getColor(names[model.getNameCycle()]).getGreen();
-		//int blue = Network.getColor(names[model.getNameCycle()]).getBlue();
+		/*if (!model.getNodes().isEmpty())
+		{
+			String nodeToAdd = model.getNodes().get(model.getNodes().size() - 1);
+			
+			int red = Network.getColor(nodeToAdd).getRed();
+			int green = Network.getColor(nodeToAdd).getGreen();
+			int blue = Network.getColor(nodeToAdd).getBlue();
+			
+			setColor(gl, red, green, blue, 255);
+			fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
+			edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
+		}*/
 		
-		//setColor(gl, red, green, blue, 255);
-		//fillPolygon(gl, createPolygon(Network.getSides(names[model.getNameCycle()])));
-		//edgePolygon(gl, createPolygon(Network.getSides(names[model.getNameCycle()])));
+		// TODO: Adding multiple nodes on the screen
+		if (!model.getNodes().isEmpty())
+		{
+			for (int i = 0; i < model.getNodes().size(); i++)
+			{
+				String nodeToAdd = model.getNodes().get(i);
+				
+				int red = Network.getColor(nodeToAdd).getRed();
+				int green = Network.getColor(nodeToAdd).getGreen();
+				int blue = Network.getColor(nodeToAdd).getBlue();
+				
+				setColor(gl, red, green, blue, 255);
+				fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
+				edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
+			}
+		}
 	}
 
 	// An example to give you an idea about coding with transformations...
@@ -416,6 +393,17 @@ public final class View
 	//**********************************************************************
 
 	// TODO: YOUR METHODS TO MANAGE THE SOCIAL NETWORK AND CONVEX HULL HERE
+	private Deque<Point2D.Double>	getCurrentlySelectedNode()
+	{
+		if (!visibleNodes.isEmpty())
+		{
+			return visibleNodes.get(model.getNodeCycle());
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	//**********************************************************************
 	// Private Methods (Polygons)
@@ -447,6 +435,9 @@ public final class View
 			y = radius * Math.sin(i * angle);
 			polygon.add(new Point2D.Double(x, y));
 		}
+		
+		// TODO: Test this. This adds polygon to the visible nodes list.
+		visibleNodes.add(polygon);
 	
 		return polygon;
 	}
@@ -478,6 +469,27 @@ public final class View
 	public void	selectNodeInSceneCoordinates(Point2D.Double q)
 	{
 		// TODO: ADD CODE TO SELECT A NODE WHEN A CLICK POINT IS INSIDE IT
+		
+		/*if (contains(visibleNodes.get(model.getNodeCycle()), q))
+		{
+			System.out.println("True");
+		}
+		else
+		{
+			System.out.println("False");
+		}*/
+		
+		for (int i = 0; i < visibleNodes.size(); i++)
+		{
+			if (contains(visibleNodes.get(i), q))
+			{
+				System.out.println("True");
+			}
+			else
+			{
+				System.out.println("False");
+			}
+		}
 	}
 
 	//**********************************************************************
