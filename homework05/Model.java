@@ -80,6 +80,8 @@ public final class Model
 	
 	// Managing nodes.
 	private final ArrayList<String>	nodes;
+	// Selected node. Only one is selected at a time.
+	private final ArrayList<String> selectedNode;
 
 	//**********************************************************************
 	// Constructors and Finalize
@@ -96,20 +98,23 @@ public final class Model
 		nameCycle = 0;
 		nodeCycle = 0;
 		
-		dx = 0.0;
-		dy = 0.0;
-		nodeRadius = 0.05;
+		// Default nodes at origin with radius of 0.05.
+		dx = 0.000;
+		dy = 0.000;
+		nodeRadius = 0.050;
+		nodeRotation = 1;
 		
 		// List of all names.
 		names = Network.getAllNames();
-		
 		individualNames = new ArrayList<String>();
 		for (int i = 0; i < names.length; i++)
 		{
 			individualNames.add(names[i]);
 		}
 		
+		// Initializing nodes and selected node.
 		nodes = new ArrayList<String>();
+		selectedNode = new ArrayList<String>();
 	}
 
 	//**********************************************************************
@@ -167,13 +172,24 @@ public final class Model
 	{
 		return individualNames;
 	}
+	
+	// To add nodes to the screen.
+	public ArrayList<String> getNodes()
+	{
+		return nodes;
+	}
+	
+	public ArrayList<String> getSelectedNode()
+	{
+		return selectedNode;
+	}
 
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
 
 	public void	setCursorInViewCoordinates(Point q)
-	{	// TODO: ADD ACCESS METHODS FOR YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
+	{
 		if (q == null)
 		{
 			view.getCanvas().invoke(false, new BasicUpdater() {
@@ -201,7 +217,6 @@ public final class Model
 				nameCycle = nameCycle + 1;
 				
 				// Bounds check.
-				//if (nameCycle > view.getNameListSize() - 1)
 				if (nameCycle > names.length - 1)
 				{
 					nameCycle = nameCycle - 1;
@@ -225,16 +240,43 @@ public final class Model
 		});;
 	}
 	
-	// TODO: Implement adding currently selected name to node.
+	// Adding currently selected name to node.
 	public void addNode()
 	{
-		System.out.println("Adding selected name to node.");
+		view.getCanvas().invoke(false, new BasicUpdater() {
+			public void update(GL2 gl) {
+				// Add nodes and remove name from name's list as it is visible.
+				if (!individualNames.isEmpty())
+				{
+					nodes.add(individualNames.get(nameCycle));
+					individualNames.remove(nameCycle);
+				}
+				else
+				{
+					return;
+				}
+			}
+		});;
 	}
 	
-	// TODO: Implement node deletion.
+	// Delete currently selected node.
 	public void deleteNode()
 	{
-		System.out.println("Deleting selected node.");
+		view.getCanvas().invoke(false, new BasicUpdater() {
+			public void update(GL2 gl) {
+				if (!nodes.isEmpty())
+				{
+					// Remove selected node from visible nodes list.
+					// Add name of removed node back to list of available names.
+					// TODO: Fix out of bound errors.
+					individualNames.add(nodes.remove(nodeCycle));
+				}
+				else
+				{
+					return;
+				}
+			}
+		});;
 	}
 	
 	public void increaseNodeCycle()
@@ -244,7 +286,7 @@ public final class Model
 				nodeCycle = nodeCycle + 1;
 				
 				// Bounds check.
-				if (nodeCycle > Network.getAllNames().length - 1)
+				if (nodeCycle > nodes.size() - 1)
 				{
 					nodeCycle = nodeCycle - 1;
 				}

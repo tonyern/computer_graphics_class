@@ -73,7 +73,6 @@ public final class View
 	private final MouseHandler		mouseHandler;
 
 	// TODO: YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
-	private final ArrayList<Deque<Point2D.Double>> visibleNodes;
 	
 	//**********************************************************************
 	// Constructors and Finalize
@@ -91,7 +90,6 @@ public final class View
 		model = new Model(this);
 
 		// TODO: INITIALIZE YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
-		visibleNodes = new ArrayList<Deque<Point2D.Double>>();
 		
 		// Initialize controller (interaction handlers)
 		keyHandler = new KeyHandler(this, model);
@@ -329,21 +327,7 @@ public final class View
 
 	// Draw the social network nodes that are currently inserted/visible.
 	private void	drawNodes(GL2 gl)
-	{
-		/*if (!model.getNodes().isEmpty())
-		{
-			String nodeToAdd = model.getNodes().get(model.getNodes().size() - 1);
-			
-			int red = Network.getColor(nodeToAdd).getRed();
-			int green = Network.getColor(nodeToAdd).getGreen();
-			int blue = Network.getColor(nodeToAdd).getBlue();
-			
-			setColor(gl, red, green, blue, 255);
-			fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
-			edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
-		}*/
-		
-		// TODO: Adding multiple nodes on the screen
+	{		
 		if (!model.getNodes().isEmpty())
 		{
 			for (int i = 0; i < model.getNodes().size(); i++)
@@ -355,13 +339,44 @@ public final class View
 				int blue = Network.getColor(nodeToAdd).getBlue();
 				
 				setColor(gl, red, green, blue, 255);
-				fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
-				edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd)));
+				fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+						0.000, 0.000, 0.050));
+				edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+						0.000, 0.000, 0.050));
 			}
+		}
+		
+		drawSelectedNode(gl);
+	}
+	
+	// User can cycle between visible nodes. Once a node is currently selected,
+	// its edges color white to show selection.
+	private void drawSelectedNode(GL2 gl)
+	{
+		if (!model.getNodes().isEmpty())
+		{
+			String nodeToAdd = model.getNodes().get(model.getNodeCycle());
+			
+			int red = Network.getColor(nodeToAdd).getRed();
+			int green = Network.getColor(nodeToAdd).getGreen();
+			int blue = Network.getColor(nodeToAdd).getBlue();
+			
+			gl.glPushMatrix();
+			
+			gl.glRotated(model.getNodeRotation(), 0.0, 0.0, 1.0);
+			
+			setColor(gl, red, green, blue, 255);
+			fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+					model.getX(), model.getY(), model.getNodeRadius()));
+			setColor(gl, 255, 255, 255, 255);
+			edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+					model.getX(), model.getY(), model.getNodeRadius()));
+			
+			gl.glPopMatrix();
 		}
 	}
 
-	// An example to give you an idea about coding with transformations...
+	/*// An example to give you an idea about coding with transformations...
 	private void	drawAnExampleThingWithAffineTransformations(GL2 gl)
 	{
 		// Calculate translation, scaling, and rotation values for your object
@@ -386,24 +401,13 @@ public final class View
 		edgePolygon(gl, createPolygon(32));		// Edge a "circle"
 
 		gl.glPopMatrix();						// End using internal xforms
-	}
+	}*/
 
 	//**********************************************************************
 	// Private Methods (Network and Hull)
 	//**********************************************************************
 
-	// TODO: YOUR METHODS TO MANAGE THE SOCIAL NETWORK AND CONVEX HULL HERE
-	private Deque<Point2D.Double>	getCurrentlySelectedNode()
-	{
-		if (!visibleNodes.isEmpty())
-		{
-			return visibleNodes.get(model.getNodeCycle());
-		}
-		else
-		{
-			return null;
-		}
-	}
+	// TODO: YOUR METHODS TO MANAGE THE SOCIAL NETWORK AND CONVEX HULL HERE	
 
 	//**********************************************************************
 	// Private Methods (Polygons)
@@ -417,15 +421,17 @@ public final class View
 	
 	// Creates a regular N-gon with points stored in counterclockwise order.
 	// The polygon is centered at the origin with first vertex at (1.0, 0.0).
-	private Deque<Point2D.Double>	createPolygon(int sides)
+	private Deque<Point2D.Double>	createPolygon(int sides, 
+			double dx, double dy, double rad)
 	{	
 		Deque<Point2D.Double>	polygon = new ArrayDeque<Point2D.Double>(sides);
 			
 		// Initializing variables needed to get coordinates of Regular Polygons.
 		double angle = (2 * Math.PI) / sides;
-		double x = 0.000;
-		double y = 0.000;
-		double radius = 0.05;
+		double x = dx;
+		double y = dy;
+		// TODO: Not sure about this radius and origin.
+		double radius = rad;
 			
 		// Loop through sides and calculate vertices of the polygon.
 		for (int i = 0; i < sides; i++)
@@ -435,9 +441,6 @@ public final class View
 			y = radius * Math.sin(i * angle);
 			polygon.add(new Point2D.Double(x, y));
 		}
-		
-		// TODO: Test this. This adds polygon to the visible nodes list.
-		visibleNodes.add(polygon);
 	
 		return polygon;
 	}
@@ -468,28 +471,6 @@ public final class View
 	// method. Called on OpenGL thread from Model.selectNodeInViewCoordinates.
 	public void	selectNodeInSceneCoordinates(Point2D.Double q)
 	{
-		// TODO: ADD CODE TO SELECT A NODE WHEN A CLICK POINT IS INSIDE IT
-		
-		/*if (contains(visibleNodes.get(model.getNodeCycle()), q))
-		{
-			System.out.println("True");
-		}
-		else
-		{
-			System.out.println("False");
-		}*/
-		
-		for (int i = 0; i < visibleNodes.size(); i++)
-		{
-			if (contains(visibleNodes.get(i), q))
-			{
-				System.out.println("True");
-			}
-			else
-			{
-				System.out.println("False");
-			}
-		}
 	}
 
 	//**********************************************************************
