@@ -20,10 +20,9 @@ package edu.ou.cs.cg.assignment.homework05;
 //import java.lang.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.text.DecimalFormat;
 import java.util.*;
-
-import javax.xml.stream.events.Namespace;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
@@ -73,6 +72,8 @@ public final class View
 	private final MouseHandler		mouseHandler;
 
 	// TODO: YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
+	private final ArrayList<Deque<Point2D.Double>> nodePolygon;
+	private final Deque<Point2D.Double>	hull;
 	
 	//**********************************************************************
 	// Constructors and Finalize
@@ -90,6 +91,8 @@ public final class View
 		model = new Model(this);
 
 		// TODO: INITIALIZE YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
+		nodePolygon = new ArrayList<Deque<Point2D.Double>>();
+		hull = new ArrayDeque<Point2D.Double>();
 		
 		// Initialize controller (interaction handlers)
 		keyHandler = new KeyHandler(this, model);
@@ -117,6 +120,11 @@ public final class View
 	public int	getHeight()
 	{
 		return h;
+	}
+	
+	public int getCounter()
+	{
+		return counter;
 	}
 
 	//**********************************************************************
@@ -241,6 +249,7 @@ public final class View
 		drawAxes(gl);					// X and Y axes
 		drawHull(gl);					// Convex hull around...
 		drawNodes(gl);					// ...all inserted/visible nodes
+		drawSelectedNode(gl);			// Current node selected
 		drawCursor(gl);					// Cursor around the mouse point
 	}
 
@@ -322,7 +331,12 @@ public final class View
 	// Draw the convex hull around the currently inserted/visible nodes.
 	private void	drawHull(GL2 gl)
 	{
-		// TODO: YOUR CODE HERE
+		// If hull is empty, it becomes just the insert point.
+		if (hull.isEmpty())
+		{
+			// TODO: Figure out insert point.
+		}
+		
 	}
 
 	// Draw the social network nodes that are currently inserted/visible.
@@ -340,19 +354,22 @@ public final class View
 				
 				setColor(gl, red, green, blue, 255);
 				fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-						0.000, 0.000, 0.050));
+						0.050));
 				edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-						0.000, 0.000, 0.050));
+						0.050));
 			}
 		}
-		
-		drawSelectedNode(gl);
+		else
+		{
+			return;
+		}
 	}
 	
 	// User can cycle between visible nodes. Once a node is currently selected,
 	// its edges color white to show selection.
 	private void drawSelectedNode(GL2 gl)
-	{
+	{		
+		// TODO: Issue with transformation tracking.
 		if (!model.getNodes().isEmpty())
 		{
 			String nodeToAdd = model.getNodes().get(model.getNodeCycle());
@@ -363,16 +380,24 @@ public final class View
 			
 			gl.glPushMatrix();
 			
+			// Node movements.
+			gl.glTranslated(model.getSelectedX(), model.getSelectedY(), 0.0);
+			
+			// Node Rotation.
 			gl.glRotated(model.getNodeRotation(), 0.0, 0.0, 1.0);
 			
 			setColor(gl, red, green, blue, 255);
 			fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-					model.getX(), model.getY(), model.getNodeRadius()));
+					model.getNodeRadius()));
 			setColor(gl, 255, 255, 255, 255);
 			edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-					model.getX(), model.getY(), model.getNodeRadius()));
+					model.getNodeRadius()));
 			
 			gl.glPopMatrix();
+		}
+		else
+		{
+			return;
 		}
 	}
 
@@ -421,16 +446,14 @@ public final class View
 	
 	// Creates a regular N-gon with points stored in counterclockwise order.
 	// The polygon is centered at the origin with first vertex at (1.0, 0.0).
-	private Deque<Point2D.Double>	createPolygon(int sides, 
-			double dx, double dy, double rad)
+	private Deque<Point2D.Double>	createPolygon(int sides, double rad)
 	{	
 		Deque<Point2D.Double>	polygon = new ArrayDeque<Point2D.Double>(sides);
 			
 		// Initializing variables needed to get coordinates of Regular Polygons.
 		double angle = (2 * Math.PI) / sides;
-		double x = dx;
-		double y = dy;
-		// TODO: Not sure about this radius and origin.
+		double x = 0.000;
+		double y = 0.000;
 		double radius = rad;
 			
 		// Loop through sides and calculate vertices of the polygon.
@@ -442,6 +465,9 @@ public final class View
 			polygon.add(new Point2D.Double(x, y));
 		}
 	
+		// TODO: Test adding to array list.
+		nodePolygon.add(polygon);
+		
 		return polygon;
 	}
 
@@ -465,12 +491,6 @@ public final class View
 			gl.glVertex2d(p.x, p.y);
 
 		gl.glEnd();
-	}
-
-	// Selects a node whose polygon contains point q. Mouse clicks trigger this
-	// method. Called on OpenGL thread from Model.selectNodeInViewCoordinates.
-	public void	selectNodeInSceneCoordinates(Point2D.Double q)
-	{
 	}
 
 	//**********************************************************************

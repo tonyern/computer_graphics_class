@@ -62,6 +62,10 @@ public final class Model
 	// XY coordinates of a node that if selected, user can manipulate.
 	double								dx;
 	double								dy;
+	double								selectedX;
+	double								selectedY;
+	// Size of x and y changes with user interaction.
+	double								movementStep;
 	
 	// For user to cycle through name.
 	private int							nameCycle;
@@ -80,7 +84,7 @@ public final class Model
 	
 	// Managing nodes.
 	private final ArrayList<String>	nodes;
-	// Selected node. Only one is selected at a time.
+	// One node selected at a time.
 	private final ArrayList<String> selectedNode;
 
 	//**********************************************************************
@@ -101,8 +105,6 @@ public final class Model
 		// Default nodes at origin with radius of 0.05.
 		dx = 0.000;
 		dy = 0.000;
-		nodeRadius = 0.050;
-		nodeRotation = 1;
 		
 		// List of all names.
 		names = Network.getAllNames();
@@ -115,6 +117,13 @@ public final class Model
 		// Initializing nodes and selected node.
 		nodes = new ArrayList<String>();
 		selectedNode = new ArrayList<String>();
+		
+		// Node transformation default values.
+		selectedX = 0.000;
+		selectedY = 0.000;
+		nodeRadius = 0.050;
+		nodeRotation = 1;
+		movementStep = 0.05;
 	}
 
 	//**********************************************************************
@@ -153,6 +162,16 @@ public final class Model
 		return dy;
 	}
 	
+	public double getSelectedX()
+	{
+		return selectedX;
+	}
+	
+	public double getSelectedY()
+	{
+		return selectedY;
+	}
+	
 	public double getNodeRadius()
 	{
 		return nodeRadius;
@@ -183,7 +202,7 @@ public final class Model
 	{
 		return selectedNode;
 	}
-
+	
 	//**********************************************************************
 	// Public Methods (Modify Variables)
 	//**********************************************************************
@@ -266,9 +285,18 @@ public final class Model
 			public void update(GL2 gl) {
 				if (!nodes.isEmpty())
 				{
+					// If statements to find bound problems.
+					if (nodeCycle > 0)
+					{
+						nodeCycle = 0;
+					}
+					else if (nodeCycle >= 26)
+					{
+						nodeCycle = 25;
+					}
+					
 					// Remove selected node from visible nodes list.
 					// Add name of removed node back to list of available names.
-					// TODO: Fix out of bound errors.
 					individualNames.add(nodes.remove(nodeCycle));
 				}
 				else
@@ -378,7 +406,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				dx -= 5.0;
+				selectedX -= movementStep;
 			}
 		});;
 	}
@@ -387,7 +415,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				dx += 5.0;
+				selectedX += movementStep;
 			}
 		});;
 	}
@@ -396,7 +424,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				dy -= 5.0;
+				selectedY -= movementStep;
 			}
 		});;
 	}
@@ -405,22 +433,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				dy += 5.0;
-			}
-		});;
-	}
-
-	//**********************************************************************
-	// Public Methods (Special)
-	//**********************************************************************
-
-	public void	selectNodeInViewCoordinates(Point q)
-	{
-		view.getCanvas().invoke(false, new ViewPointUpdater(q) {
-			public void	update(double[] p) {
-				Point2D.Double	r = new Point2D.Double(p[0], p[1]);
-
-				view.selectNodeInSceneCoordinates(r);
+				selectedY += movementStep;
 			}
 		});;
 	}

@@ -62,7 +62,6 @@ public final class MouseHandler extends MouseAdapter
 
 	public void		mouseClicked(MouseEvent e)
 	{
-		model.selectNodeInViewCoordinates(e.getPoint());
 	}
 
 	public void		mouseEntered(MouseEvent e)
