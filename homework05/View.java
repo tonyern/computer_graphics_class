@@ -342,7 +342,6 @@ public final class View
 	private void	drawNodes(GL2 gl)
 	{
 		String nodeToAdd;
-		
 		// Draw all visible nodes in the visible nodes list.
 		if (!model.getNodes().isEmpty())
 		{
@@ -375,12 +374,22 @@ public final class View
 					gl.glPopMatrix();
 				}
 				else
-				{					
+				{
+					gl.glPushMatrix();
+					
+					// Node movements.
+					gl.glTranslated(model.getDx(i), model.getDy(i), 0.0);
+						
+					// Node Rotation.
+					gl.glRotated(model.getRotation(i), 0.0, 0.0, 1.0);
+					
 					setColor(gl, red, green, blue, 255);
 					fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-							0.050));
+							model.getRadius(i)));
 					edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-							0.050));
+							model.getRadius(i)));
+					
+					gl.glPopMatrix();
 				}
 			}
 		}
