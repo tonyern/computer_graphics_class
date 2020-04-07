@@ -249,7 +249,7 @@ public final class View
 		drawAxes(gl);					// X and Y axes
 		drawHull(gl);					// Convex hull around...
 		drawNodes(gl);					// ...all inserted/visible nodes
-		drawSelectedNode(gl);			// Current node selected
+		//drawSelectedNode(gl);			// Current node selected
 		drawCursor(gl);					// Cursor around the mouse point
 	}
 
@@ -341,22 +341,47 @@ public final class View
 
 	// Draw the social network nodes that are currently inserted/visible.
 	private void	drawNodes(GL2 gl)
-	{		
+	{
+		String nodeToAdd;
+		
+		// Draw all visible nodes in the visible nodes list.
 		if (!model.getNodes().isEmpty())
 		{
 			for (int i = 0; i < model.getNodes().size(); i++)
 			{
-				String nodeToAdd = model.getNodes().get(i);
+				nodeToAdd = model.getNodes().get(i);
 				
 				int red = Network.getColor(nodeToAdd).getRed();
 				int green = Network.getColor(nodeToAdd).getGreen();
 				int blue = Network.getColor(nodeToAdd).getBlue();
 				
-				setColor(gl, red, green, blue, 255);
-				fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-						0.050));
-				edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
-						0.050));
+				if (i == model.getNodeCycle())
+				{
+					gl.glPushMatrix();
+					
+					// Node movements.
+					gl.glTranslated(model.getSelectedX(), model.getSelectedY(), 0.0);
+						
+					// Node Rotation.
+					gl.glRotated(model.getNodeRotation(), 0.0, 0.0, 1.0);
+					
+					setColor(gl, red, green, blue, 255);
+					fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+							model.getNodeRadius()));
+					setColor(gl, 255, 255, 255, 255);
+					edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+							model.getNodeRadius()));
+					
+					gl.glPopMatrix();
+				}
+				else
+				{
+					setColor(gl, red, green, blue, 255);
+					fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+							0.050));
+					edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
+							0.050));
+				}
 			}
 		}
 		else
@@ -365,41 +390,47 @@ public final class View
 		}
 	}
 	
-	// User can cycle between visible nodes. Once a node is currently selected,
+	/*// User can cycle between visible nodes. Once a node is currently selected,
 	// its edges color white to show selection.
 	private void drawSelectedNode(GL2 gl)
-	{		
-		// TODO: Issue with transformation tracking.
-		if (!model.getNodes().isEmpty())
+	{
+		if (!model.getSelectedNode().isEmpty())
 		{
-			String nodeToAdd = model.getNodes().get(model.getNodeCycle());
+			String nodeToAdd = model.getSelectedNode().get(0);
+				
+			// Remove from visible nodes list as there was a problem of duplicate
+			// nodes appearing.
+			if (model.getNodes().contains(nodeToAdd))
+			{
+				model.getNodes().remove(nodeToAdd);
+			}
 			
 			int red = Network.getColor(nodeToAdd).getRed();
 			int green = Network.getColor(nodeToAdd).getGreen();
 			int blue = Network.getColor(nodeToAdd).getBlue();
-			
+				
 			gl.glPushMatrix();
-			
+				
 			// Node movements.
 			gl.glTranslated(model.getSelectedX(), model.getSelectedY(), 0.0);
-			
+				
 			// Node Rotation.
 			gl.glRotated(model.getNodeRotation(), 0.0, 0.0, 1.0);
-			
+				
 			setColor(gl, red, green, blue, 255);
 			fillPolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
 					model.getNodeRadius()));
 			setColor(gl, 255, 255, 255, 255);
 			edgePolygon(gl, createPolygon(Network.getSides(nodeToAdd), 
 					model.getNodeRadius()));
-			
+				
 			gl.glPopMatrix();
 		}
 		else
 		{
 			return;
 		}
-	}
+	}*/
 
 	/*// An example to give you an idea about coding with transformations...
 	private void	drawAnExampleThingWithAffineTransformations(GL2 gl)

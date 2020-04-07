@@ -85,7 +85,7 @@ public final class Model
 	// Managing nodes.
 	private final ArrayList<String>	nodes;
 	// One node selected at a time.
-	private final ArrayList<String> selectedNode;
+	//private final ArrayList<String> selectedNode;
 
 	//**********************************************************************
 	// Constructors and Finalize
@@ -116,7 +116,7 @@ public final class Model
 		
 		// Initializing nodes and selected node.
 		nodes = new ArrayList<String>();
-		selectedNode = new ArrayList<String>();
+		//selectedNode = new ArrayList<String>();
 		
 		// Node transformation default values.
 		selectedX = 0.000;
@@ -198,10 +198,10 @@ public final class Model
 		return nodes;
 	}
 	
-	public ArrayList<String> getSelectedNode()
+	/*public ArrayList<String> getSelectedNode()
 	{
 		return selectedNode;
-	}
+	}*/
 	
 	//**********************************************************************
 	// Public Methods (Modify Variables)
@@ -264,10 +264,20 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				// Add nodes and remove name from name's list as it is visible.
 				if (!individualNames.isEmpty())
 				{
+					// Add name to visible nodes.
 					nodes.add(individualNames.get(nameCycle));
+					
+					/*// If this node is the first node to be added then make it the
+					// selected node. Starting program is the only time it will be
+					// empty.
+					if (selectedNode.isEmpty())
+					{
+						selectedNode.add(individualNames.get(nameCycle));
+					}*/
+					
+					// Since name is visible, remove from names list.
 					individualNames.remove(nameCycle);
 				}
 				else
@@ -283,26 +293,30 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
+				// If statements to find bound problems.
+				if (nodeCycle > 0)
+				{
+					nodeCycle = 0;
+				}
+				else if (nodeCycle >= 26)
+				{
+					nodeCycle = 25;
+				}
+				
 				if (!nodes.isEmpty())
 				{
-					// If statements to find bound problems.
-					if (nodeCycle > 0)
-					{
-						nodeCycle = 0;
-					}
-					else if (nodeCycle >= 26)
-					{
-						nodeCycle = 25;
-					}
-					
-					// Remove selected node from visible nodes list.
-					// Add name of removed node back to list of available names.
 					individualNames.add(nodes.remove(nodeCycle));
 				}
-				else
+				
+				/*// Remove node from selected node list and add it back to names list.
+				String nodeToRemove = selectedNode.get(0);
+				individualNames.add(selectedNode.remove(nodeCycle));
+				
+				// Also remove node from visible nodes list.
+				if (nodes.contains(nodeToRemove))
 				{
-					return;
-				}
+					nodes.remove(nodeToRemove);
+				}*/
 			}
 		});;
 	}
