@@ -59,11 +59,6 @@ public final class Model
 
 	// TODO: YOUR ADDITIONAL MEMBERS HERE (AS NEEDED)
 	
-	// XY coordinates of a node that if selected, user can manipulate.
-	double								dx;
-	double								dy;
-	double								selectedX;
-	double								selectedY;
 	// Size of x and y changes with user interaction.
 	double								movementStep;
 	
@@ -71,12 +66,14 @@ public final class Model
 	private int							nameCycle;
 	// For user to cycle through nodes.
 	private int							nodeCycle;
-	// For user to scale radius of selected node.
-	private double						nodeRadius;
-	// For user to rotate the selected node.
-	private int							nodeRotation;
 	// For user to scale hull radius.
 	private double						hullRadius;
+	
+	// Array list of transformations that track user interaction with nodes.
+	private final ArrayList<Double> dx;
+	private final ArrayList<Double> dy;
+	private final ArrayList<Double> radius;
+	private final ArrayList<Integer> rotation;
 	
 	// Managing names.
 	private final String[] names;
@@ -84,8 +81,6 @@ public final class Model
 	
 	// Managing nodes.
 	private final ArrayList<String>	nodes;
-	// One node selected at a time.
-	//private final ArrayList<String> selectedNode;
 
 	//**********************************************************************
 	// Constructors and Finalize
@@ -102,10 +97,6 @@ public final class Model
 		nameCycle = 0;
 		nodeCycle = 0;
 		
-		// Default nodes at origin with radius of 0.05.
-		dx = 0.000;
-		dy = 0.000;
-		
 		// List of all names.
 		names = Network.getAllNames();
 		individualNames = new ArrayList<String>();
@@ -114,15 +105,14 @@ public final class Model
 			individualNames.add(names[i]);
 		}
 		
-		// Initializing nodes and selected node.
+		// Initializing nodes.
 		nodes = new ArrayList<String>();
-		//selectedNode = new ArrayList<String>();
+		dx = new ArrayList<Double>();
+		dy = new ArrayList<Double>();
+		radius = new ArrayList<Double>();
+		rotation = new ArrayList<Integer>();
 		
-		// Node transformation default values.
-		selectedX = 0.000;
-		selectedY = 0.000;
-		nodeRadius = 0.050;
-		nodeRotation = 1;
+		// Size of stepping pressing the arrow keys.
 		movementStep = 0.05;
 	}
 
@@ -152,36 +142,6 @@ public final class Model
 		return nodeCycle;
 	}
 	
-	public double getX()
-	{
-		return dx;
-	}
-	
-	public double getY()
-	{
-		return dy;
-	}
-	
-	public double getSelectedX()
-	{
-		return selectedX;
-	}
-	
-	public double getSelectedY()
-	{
-		return selectedY;
-	}
-	
-	public double getNodeRadius()
-	{
-		return nodeRadius;
-	}
-	
-	public int getNodeRotation()
-	{
-		return nodeRotation;
-	}
-	
 	public double getHullRadius()
 	{
 		return hullRadius;
@@ -192,16 +152,30 @@ public final class Model
 		return individualNames;
 	}
 	
-	// To add nodes to the screen.
 	public ArrayList<String> getNodes()
 	{
 		return nodes;
 	}
 	
-	/*public ArrayList<String> getSelectedNode()
+	public double getDx(int index)
 	{
-		return selectedNode;
-	}*/
+		return dx.get(index);
+	}
+	
+	public double getDy(int index)
+	{
+		return dy.get(index);
+	}
+	
+	public double getRadius(int index)
+	{
+		return radius.get(index);
+	}
+	
+	public int getRotation(int index)
+	{
+		return rotation.get(index);
+	}
 	
 	//**********************************************************************
 	// Public Methods (Modify Variables)
@@ -269,13 +243,13 @@ public final class Model
 					// Add name to visible nodes.
 					nodes.add(individualNames.get(nameCycle));
 					
-					/*// If this node is the first node to be added then make it the
-					// selected node. Starting program is the only time it will be
-					// empty.
-					if (selectedNode.isEmpty())
-					{
-						selectedNode.add(individualNames.get(nameCycle));
-					}*/
+					// Adding default radius.
+					radius.add(0.050);
+					// Adding default rotation.
+					rotation.add(1);
+					// Adding default XY coordinates at origin.
+					dx.add(0.0);
+					dy.add(0.0);
 					
 					// Since name is visible, remove from names list.
 					individualNames.remove(nameCycle);
@@ -303,20 +277,17 @@ public final class Model
 					nodeCycle = 25;
 				}
 				
+				// Removing name from visible node and adding it back to names list.
 				if (!nodes.isEmpty())
 				{
 					individualNames.add(nodes.remove(nodeCycle));
+					
+					// Removing transformations.
+					radius.remove(nodeCycle);
+					rotation.remove(nodeCycle);
+					dx.remove(nodeCycle);
+					dy.remove(nodeCycle);
 				}
-				
-				/*// Remove node from selected node list and add it back to names list.
-				String nodeToRemove = selectedNode.get(0);
-				individualNames.add(selectedNode.remove(nodeCycle));
-				
-				// Also remove node from visible nodes list.
-				if (nodes.contains(nodeToRemove))
-				{
-					nodes.remove(nodeToRemove);
-				}*/
 			}
 		});;
 	}
@@ -356,7 +327,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				nodeRadius *= 0.8;
+				radius.set(nodeCycle, radius.get(nodeCycle) * 0.8);
 			}
 		});;
 	}
@@ -366,7 +337,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				nodeRadius *= 1.2;
+				radius.set(nodeCycle, radius.get(nodeCycle) * 1.2);
 			}
 		});;
 	}
@@ -376,7 +347,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				nodeRotation -= 15;
+				rotation.set(nodeCycle, rotation.get(nodeCycle) - 15);
 			}
 		});;
 	}
@@ -386,7 +357,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				nodeRotation += 15;
+				rotation.set(nodeCycle, rotation.get(nodeCycle) + 15);
 			}
 		});;
 	}
@@ -420,7 +391,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				selectedX -= movementStep;
+				dx.set(nodeCycle, dx.get(nodeCycle) - movementStep);
 			}
 		});;
 	}
@@ -429,7 +400,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				selectedX += movementStep;
+				dx.set(nodeCycle, dx.get(nodeCycle) + movementStep);
 			}
 		});;
 	}
@@ -438,7 +409,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				selectedY -= movementStep;
+				dy.set(nodeCycle, dy.get(nodeCycle) - movementStep);
 			}
 		});;
 	}
@@ -447,7 +418,7 @@ public final class Model
 	{
 		view.getCanvas().invoke(false, new BasicUpdater() {
 			public void update(GL2 gl) {
-				selectedY += movementStep;
+				dy.set(nodeCycle, dy.get(nodeCycle) + movementStep);
 			}
 		});;
 	}
