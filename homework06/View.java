@@ -68,7 +68,11 @@ public final class View
 		"grass2.jpg",	// Image #1 used to texture the floor of the sky box.
 		"log-ends.jpg", // Image #2 used to texture the ends of the logs.
 		"sky3.jpg",		// Image #3 used to texture the sky of the sky box.
-		"scary-forest4.jpg" // Image #4 used to texture the background wall as a scary forest.
+		"scary-forest4.jpg", // Image #4 used to texture the background wall as a scary forest.
+		"marshmallow.jpg", // Image #5 used to texture the marshmallow.
+		"stick-wood.jpg", // Image #6 used to texture the stick that holds the marshmallows.
+		"metal-pole.jpeg", // Image #7 used to texture the flag pole.
+		"viva-mexico.jpeg" // Image #8 used to texture the wind sock.
 	};
 
 	//**********************************************************************
@@ -356,9 +360,9 @@ public final class View
 		
 		Log		log5 = new Log(textures, 7, emit);	// Create another log
 		log5.setTransform(0.1f, 0.40f, 0.1f,
-						 0.1f, 0.1f, 0.4f,
-						 1.0f, 0.0f, 0.0f,
-						 90.0f);
+						  0.1f, 0.1f, 0.4f,
+						  1.0f, 0.0f, 0.0f,
+						  90.0f);
 		
 		Log		log6 = new Log(textures, 7, emit);	// Create another log
 		log6.setTransform(0.7f, 0.40f, 0.1f,
@@ -369,57 +373,57 @@ public final class View
 		// Add seating that is an upward log.
 		Log		seat1 = new Log(textures, 6, emit);
 		seat1.setTransform(-0.9f, 0.1f, 0.3f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 			0.1f, 0.1f, 0.1f,
+				 			0.0f, 1.0f, 0.0f,
+				 			90.0f);
 		
 		Log		seat2 = new Log(textures, 6, emit);
 		seat2.setTransform(-0.8f, 0.1f, -0.3f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 			0.1f, 0.1f, 0.1f,
+				 			0.0f, 1.0f, 0.0f,
+				 			90.0f);
 		
 		Log		seat3 = new Log(textures, 6, emit);
 		seat3.setTransform(-0.5f, 0.1f, -1.2f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 			0.1f, 0.1f, 0.1f,
+				 			0.0f, 1.0f, 0.0f,
+				 			90.0f);
 		
 		Log		seat4 = new Log(textures, 6, emit);
 		seat4.setTransform(0.3f, 0.1f, -1.5f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Log		seat5 = new Log(textures, 6, emit);
 		seat5.setTransform(1.4f, 0.1f, -1.3f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Log		seat6 = new Log(textures, 6, emit);
 		seat6.setTransform(1.7f, 0.1f, -0.1f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Log		seat7 = new Log(textures, 6, emit);
 		seat7.setTransform(1.7f, 0.1f, 0.1f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Log		seat8 = new Log(textures, 6, emit);
 		seat8.setTransform(0.9f, 0.1f, 1.2f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Log		seat9 = new Log(textures, 6, emit);
 		seat9.setTransform(0.0f, 0.1f, 1.3f,
-				 0.1f, 0.1f, 0.1f,
-				 0.0f, 1.0f, 0.0f,
-				 90.0f);
+				 		   0.1f, 0.1f, 0.1f,
+				 		   0.0f, 1.0f, 0.0f,
+				 		   90.0f);
 		
 		Thing	thing = new Thing();				// Make example light
 
@@ -429,7 +433,37 @@ public final class View
 						   0.0f, 1.0f, 0.0f,
 						   0.0f);
 		
-		// TODO: Add sticks with marshmallows.
+		// Add two marshmallows.
+		Marshmallow marshmallow1 = new Marshmallow(textures, 360, emit);
+		marshmallow1.setTransform(0.1f, 0.8f, 0.1f,
+				 				  0.02f, 0.02f, 0.02f,
+				 				  0.0f, 1.0f, 0.0f,
+				 				  90.0f);
+		
+		Marshmallow marshmallow2 = new Marshmallow(textures, 360, emit);
+		marshmallow2.setTransform(0.1f, 0.87f, 0.1f,
+				 				  0.02f, 0.02f, 0.02f,
+				 				  0.0f, 1.0f, 0.0f,
+				 				  90.0f);
+		
+		// Add stick to put marshmallows on.
+		Stick stick = new Stick(textures, 360, emit);
+		stick.setTransform(0.1f, 0.65f, 0.1f,
+				  		   0.001f, 0.3f, 0.001f,
+				  		   0.0f, 1.0f, 0.0f,
+				  		   90.0f);
+		
+		// Add flag pole with wind sock.
+		Pole flagPole = new Pole(textures, 360, emit);
+		flagPole.setTransform(1.0f, 0.1f, -2.0f,
+				  		   	  0.02f, 1.5f, 0.02f,
+				  		   	  0.0f, 3.0f, 0.0f,
+				  		   	  90.0f);
+		WindSock windSock = new WindSock(textures, 360, emit);
+		windSock.setTransform(1.25f, 1.5f, -2.0f,
+		  		   			  0.2f, 0.1f, 0.2f,
+		  		   			  0.0f, 0.0f, 4.0f,
+		  		   			  90.0f);
 
 		// Add them to the scene graph
 		root.add(log1);
@@ -447,6 +481,11 @@ public final class View
 		root.add(seat7);
 		root.add(seat8);
 		root.add(seat9);
+		root.add(marshmallow1);
+		root.add(marshmallow2);
+		root.add(stick);
+		root.add(flagPole);
+		root.add(windSock);
 		root.add(thing);
 	}
 
@@ -623,6 +662,137 @@ public final class View
 	//**********************************************************************
 
 	// TODO: Implement your scene objects as subclasses of Node. Examples below.
+	
+	// Wind sock object.
+	public static final class WindSock extends Node
+	{
+		private final int		sides;			// Allow logs to look jagged
+		private final float[]	emit;			// Allow logs to glow dimly
+		private final Cylinder	cylinder;		// Geometry for the log
+
+		public WindSock(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cylinder = new Cylinder(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The wind sock just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cylinder.fill(gl, textures[8]);		// Around sides
+			cylinder.fillFoot(gl, textures[8]);	// Bottom end
+			cylinder.fillHead(gl, textures[8]);	// Top end
+		}
+	}
+	
+	// Pole object.
+	public static final class Pole extends Node
+	{
+		private final int		sides;			// Allow logs to look jagged
+		private final float[]	emit;			// Allow logs to glow dimly
+
+		private final Cylinder	cylinder;		// Geometry for the log
+
+		public Pole(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cylinder = new Cylinder(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The pole just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cylinder.fill(gl, textures[7]);		// Around sides
+			cylinder.fillFoot(gl, textures[7]);	// Bottom end
+			cylinder.fillHead(gl, textures[7]);	// Top end
+		}
+	}
+	
+	// Stick object.
+	public static final class Stick extends Node
+	{
+		private final int		sides;			// Allow logs to look jagged
+		private final float[]	emit;			// Allow logs to glow dimly
+
+		private final Cylinder	cylinder;		// Geometry for the log
+
+		public Stick(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cylinder = new Cylinder(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The stick just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cylinder.fill(gl, textures[6]);		// Around sides
+			cylinder.fillFoot(gl, textures[6]);	// Bottom end
+			cylinder.fillHead(gl, textures[6]);	// Top end
+		}
+	}
+	
+	// Marshmallow object.
+	public static final class Marshmallow extends Node
+	{
+		private final int		sides;			// Allow logs to look jagged
+		private final float[]	emit;			// Allow logs to glow dimly
+
+		private final Cylinder	cylinder;		// Geometry for the log
+
+		public Marshmallow(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cylinder = new Cylinder(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The marshmallow just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cylinder.fill(gl, textures[5]);		// Around sides
+			cylinder.fillFoot(gl, textures[5]);	// Bottom end
+			cylinder.fillHead(gl, textures[5]);	// Top end
+		}
+	}
 
 	// Provides some basic functionality. Adapt to meet all of your Log needs!
 	public static final class Log extends Node
