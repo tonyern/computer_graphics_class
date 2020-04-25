@@ -32,8 +32,8 @@ package edu.ou.cs.cg.assignment.homework06;
 
 //import java.lang.*;
 import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.*;
+//import java.awt.geom.Point2D;
+//import java.util.*;
 import com.jogamp.opengl.*;
 import edu.ou.cs.cg.utilities.Utilities;
 
@@ -55,7 +55,6 @@ public final class Model
 	private final View		view;
 
 	// Model variables
-	// TODO: YOUR MEMBERS HERE (AS NEEDED)
 	private double			foo;
 	private double			cameraDistance;
 	private double			focalPointHeight;
@@ -70,7 +69,6 @@ public final class Model
 	{
 		this.view = view;
 
-		// TODO: INITIALIZE YOUR MEMBERS HERE (AS NEEDED)
 		foo = 0.0;
 		cameraDistance = 1.0;
 		focalPointHeight = 0.2;
@@ -82,7 +80,6 @@ public final class Model
 	// Public Methods (Access Variables)
 	//**********************************************************************
 
-	// TODO: ADD ACCESS METHODS FOR YOUR MEMBERS HERE (AS NEEDED)
 	public double	getFoo()
 	{
 		return foo;
@@ -170,6 +167,7 @@ public final class Model
 
 	// Convenience class to simplify updates in cases in which the input is a
 	// single point in view coordinates (integers/pixels).
+	@SuppressWarnings("unused")
 	private abstract class ViewPointUpdater extends BasicUpdater
 	{
 		private final Point	q;

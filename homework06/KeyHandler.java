@@ -62,8 +62,6 @@ public final class KeyHandler extends KeyAdapter
 	{
 		boolean	b = Utilities.isShiftDown(e);
 
-		// TODO: YOUR KEYBOARD EVENT HANDLING CODE HERE
-
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:

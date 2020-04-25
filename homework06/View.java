@@ -23,16 +23,16 @@ package edu.ou.cs.cg.assignment.homework06;
 
 //import java.lang.*;
 import java.awt.Font;
-import java.awt.event.*;
+//import java.awt.event.*;
 //import java.awt.geom.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
-import javax.swing.*;
+//import javax.swing.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.*;
 import com.jogamp.opengl.glu.*;
-import com.jogamp.opengl.math.Quaternion;
+//import com.jogamp.opengl.math.Quaternion;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -336,9 +336,9 @@ public final class View
 		float[]	emit = new float[] { 0.8f, 0.6f, 0.0f, 1.0f };
 		Log		log1 = new Log(textures, 7, emit);	// Create a log
 		log1.setTransform(0.1f, 0.1f, 0.1f,
-						 0.1f, 0.1f, 0.4f,
-						 1.0f, 0.0f, 0.0f,
-						 90.0f);
+						  0.1f, 0.1f, 0.4f,
+						  1.0f, 0.0f, 0.0f,
+						  90.0f);
 		
 		Log		log2 = new Log(textures, 7, emit);	// Create another log
 		log2.setTransform(0.7f, 0.1f, 0.1f,
@@ -370,19 +370,25 @@ public final class View
 						  1.0f, 0.0f, 0.0f,
 						  90.0f);
 		
+		// Leg for the flat wood bench.
+		Log		seatLeg1 = new Log(textures, 5, emit);
+		seatLeg1.setTransform(-0.9f, 0.1f, 0.3f,
+				 			0.1f, 0.1f, 0.1f,
+				 			0.0f, 0.0f, 1.0f,
+				 			90.0f);
+		Log		seatLeg2 = new Log(textures, 5, emit);
+		seatLeg2.setTransform(-0.9f, 0.1f, -0.3f,
+				 			0.1f, 0.1f, 0.1f,
+				 			0.0f, 0.0f, 1.0f,
+				 			90.0f);
+		// Add flat half cylinder on top of the two seat legs.
+		Bench	bench1 = new Bench(textures, 360, emit);
+		bench1.setTransform(-0.9f, 0.23f, 0.0f,
+	 					   0.1f, 0.1f, 0.5f,
+	 					   1.0f, 0.0f, 0.0f,
+	 					   90.0f);
+		
 		// Add seating that is an upward log.
-		Log		seat1 = new Log(textures, 6, emit);
-		seat1.setTransform(-0.9f, 0.1f, 0.3f,
-				 			0.1f, 0.1f, 0.1f,
-				 			0.0f, 1.0f, 0.0f,
-				 			90.0f);
-		
-		Log		seat2 = new Log(textures, 6, emit);
-		seat2.setTransform(-0.8f, 0.1f, -0.3f,
-				 			0.1f, 0.1f, 0.1f,
-				 			0.0f, 1.0f, 0.0f,
-				 			90.0f);
-		
 		Log		seat3 = new Log(textures, 6, emit);
 		seat3.setTransform(-0.5f, 0.1f, -1.2f,
 				 			0.1f, 0.1f, 0.1f,
@@ -401,17 +407,23 @@ public final class View
 				 		   0.0f, 1.0f, 0.0f,
 				 		   90.0f);
 		
-		Log		seat6 = new Log(textures, 6, emit);
-		seat6.setTransform(1.7f, 0.1f, -0.1f,
-				 		   0.1f, 0.1f, 0.1f,
-				 		   0.0f, 1.0f, 0.0f,
-				 		   90.0f);
-		
-		Log		seat7 = new Log(textures, 6, emit);
-		seat7.setTransform(1.7f, 0.1f, 0.1f,
-				 		   0.1f, 0.1f, 0.1f,
-				 		   0.0f, 1.0f, 0.0f,
-				 		   90.0f);
+		// Leg for the flat wood bench.
+		Log		seatLeg3 = new Log(textures, 5, emit);
+		seatLeg3.setTransform(1.5f, 0.1f, -0.3f,
+	 						  0.1f, 0.1f, 0.1f,
+	 						  0.0f, 0.0f, 1.0f,
+	 						  90.0f);
+		Log		seatLeg4 = new Log(textures, 5, emit);
+		seatLeg4.setTransform(1.5f, 0.1f, 0.3f,
+	 						  0.1f, 0.1f, 0.1f,
+	 						  0.0f, 0.0f, 1.0f,
+	 						  90.0f);
+		// Add flat half cylinder on top of the two seat legs.
+		Bench	bench2 = new Bench(textures, 360, emit);
+		bench2.setTransform(1.5f, 0.23f, 0.0f,
+	 					    0.1f, 0.1f, 0.5f,
+	 					    1.0f, 0.0f, 0.0f,
+	 					    90.0f);
 		
 		Log		seat8 = new Log(textures, 6, emit);
 		seat8.setTransform(0.9f, 0.1f, 1.2f,
@@ -472,13 +484,15 @@ public final class View
 		root.add(log4);
 		root.add(log5);
 		root.add(log6);
-		root.add(seat1);
-		root.add(seat2);
+		root.add(seatLeg1);
+		root.add(seatLeg2);
+		root.add(bench1);
 		root.add(seat3);
 		root.add(seat4);
 		root.add(seat5);
-		root.add(seat6);
-		root.add(seat7);
+		root.add(seatLeg3);
+		root.add(seatLeg4);
+		root.add(bench2);
 		root.add(seat8);
 		root.add(seat9);
 		root.add(marshmallow1);
@@ -526,7 +540,7 @@ public final class View
 
 		// TODO: Disable any light sources in your particle systems
 
-		drawMode(drawable);			// Draw mode text (do this last)
+		drawMode(drawable);				// Draw mode text (do this last)
 	}
 
 	// Draw text for the various interactively controlled model parameters
@@ -660,8 +674,6 @@ public final class View
 	//**********************************************************************
 	// Private Methods (Particles)
 	//**********************************************************************
-
-	// TODO: Implement your scene objects as subclasses of Node. Examples below.
 	
 	// Wind sock object.
 	public static final class WindSock extends Node
@@ -692,6 +704,11 @@ public final class View
 			cylinder.fill(gl, textures[8]);		// Around sides
 			cylinder.fillFoot(gl, textures[8]);	// Bottom end
 			cylinder.fillHead(gl, textures[8]);	// Top end
+		}
+		
+		public int getSides()
+		{
+			return sides;
 		}
 	}
 	
@@ -726,6 +743,11 @@ public final class View
 			cylinder.fillFoot(gl, textures[7]);	// Bottom end
 			cylinder.fillHead(gl, textures[7]);	// Top end
 		}
+		
+		public int getSides()
+		{
+			return sides;
+		}
 	}
 	
 	// Stick object.
@@ -758,6 +780,11 @@ public final class View
 			cylinder.fill(gl, textures[6]);		// Around sides
 			cylinder.fillFoot(gl, textures[6]);	// Bottom end
 			cylinder.fillHead(gl, textures[6]);	// Top end
+		}
+		
+		public int getSides()
+		{
+			return sides;
 		}
 	}
 	
@@ -792,9 +819,13 @@ public final class View
 			cylinder.fillFoot(gl, textures[5]);	// Bottom end
 			cylinder.fillHead(gl, textures[5]);	// Top end
 		}
+		
+		public int getSides()
+		{
+			return sides;
+		}
 	}
 
-	// Provides some basic functionality. Adapt to meet all of your Log needs!
 	public static final class Log extends Node
 	{
 		private final int		sides;			// Allow logs to look jagged
@@ -822,8 +853,50 @@ public final class View
 			Lighting.setMaterial(gl, null, null, null, null, emit);
 
 			cylinder.fill(gl, textures[0]);		// Around sides
-			cylinder.fillFoot(gl, textures[1]);	// Bottom end
+			cylinder.fillFoot(gl, textures[2]);	// Bottom end
 			cylinder.fillHead(gl, textures[2]);	// Top end
+		}
+		
+		public int getSides()
+		{
+			return sides;
+		}
+	}
+
+	public static final class Bench extends Node
+	{
+		private final int		sides;			// Allow logs to look jagged
+		private final float[]	emit;			// Allow logs to glow dimly
+
+		private final Half_Cylinder	cylinder;		// Geometry for the log
+
+		public Bench(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cylinder = new Half_Cylinder(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The bench just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cylinder.fill(gl, textures[0]);		// Around sides
+			cylinder.fillFoot(gl, textures[2]);	// Bottom end
+			cylinder.fillHead(gl, textures[2]);	// Top end
+		}
+		
+		public int getSides()
+		{
+			return sides;
 		}
 	}
 
