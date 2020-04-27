@@ -95,11 +95,11 @@ public final class KeyHandler extends KeyAdapter
 				// If left key is not down.
 				if (!b)
 				{
-					model.setSceneRotationAmount(0.1);
+					model.setSceneRotationRate(0.1);
 				}
 				else
 				{
-					model.setSceneRotationAmount(0.01);
+					model.setSceneRotationRate(0.01);
 				}
 				return;
 			
@@ -108,11 +108,11 @@ public final class KeyHandler extends KeyAdapter
 				// If right key is not down.
 				if (!b)
 				{
-					model.setSceneRotationAmount(-0.1);
+					model.setSceneRotationRate(-0.1);
 				}
 				else
 				{
-					model.setSceneRotationAmount(-0.01);
+					model.setSceneRotationRate(-0.01);
 				}
 				return;
 		

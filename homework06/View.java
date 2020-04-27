@@ -72,7 +72,11 @@ public final class View
 		"marshmallow.jpg", // Image #5 used to texture the marshmallow.
 		"stick-wood.jpg", // Image #6 used to texture the stick that holds the marshmallows.
 		"metal-pole.jpeg", // Image #7 used to texture the flag pole.
-		"viva-mexico.jpeg" // Image #8 used to texture the wind sock.
+		"viva-mexico.jpeg", // Image #8 used to texture the wind sock.
+		"chest-top.png", // Image #9 used to texture the top/bottom of the tool box.
+		"chest-front.jpeg", // Image #10 used to texture the front of the tool box.
+		"chest-side.jpeg", // Image #11 used to texture the sides of the tool box.
+		"glass.png" // Image #12 used to texture glass.
 	};
 
 	//**********************************************************************
@@ -305,20 +309,18 @@ public final class View
 		// where they're looking along the y axis (above the fire).
 		glu.gluLookAt(model.getCameraDistance(), model.getCameraDistance(), 1.0 + model.getCameraDistance(), // Camera/eyes x, y, z
 					  model.getFocalPointHeight(), 0.5, model.getFocalPointHeight(), // Focal point x, y, z (origin)
-					  0.0, 1.0, 0.0);		// Above the head/"up"
+					  0.0, 1.0, 0.0); // Above the head/"up"
 
 		// ****************************************
 		// Third step: position and orient the scene
 		// ****************************************
 
-		// TODO: Update the current viewing angle around the campfire based on
+		// Update the current viewing angle around the camp fire based on
 		// the interactively set angular rate of change.
+		model.setSceneRotationAmount(model.getSceneRotationRate());
 
-		// TODO: Apply the current viewing angles the the rotation amount for
-		// the entire scene. Currently rotates the scene by a fixed 30 degrees.
-		gl.glRotated(30.0, 0.0, 1.0, 0.0);
-		
-		// Update scene rotation amount based on the current rotation rate.
+		// Apply the current viewing angles the the rotation amount for the entire scene.
+		gl.glRotated(model.getSceneRotationAmount(), 0.0, 1.0, 0.0);
 	}
 
 	//**********************************************************************
@@ -388,51 +390,32 @@ public final class View
 	 					   1.0f, 0.0f, 0.0f,
 	 					   90.0f);
 		
-		// Add seating that is an upward log.
-		Log		seat3 = new Log(textures, 6, emit);
-		seat3.setTransform(-0.5f, 0.1f, -1.2f,
-				 			0.1f, 0.1f, 0.1f,
-				 			0.0f, 1.0f, 0.0f,
-				 			90.0f);
-		
-		Log		seat4 = new Log(textures, 6, emit);
-		seat4.setTransform(0.3f, 0.1f, -1.5f,
-				 		   0.1f, 0.1f, 0.1f,
-				 		   0.0f, 1.0f, 0.0f,
-				 		   90.0f);
-		
-		Log		seat5 = new Log(textures, 6, emit);
-		seat5.setTransform(1.4f, 0.1f, -1.3f,
-				 		   0.1f, 0.1f, 0.1f,
-				 		   0.0f, 1.0f, 0.0f,
-				 		   90.0f);
-		
 		// Leg for the flat wood bench.
 		Log		seatLeg3 = new Log(textures, 5, emit);
-		seatLeg3.setTransform(1.5f, 0.1f, -0.3f,
+		seatLeg3.setTransform(1.7f, 0.1f, -0.3f,
 	 						  0.1f, 0.1f, 0.1f,
 	 						  0.0f, 0.0f, 1.0f,
 	 						  90.0f);
 		Log		seatLeg4 = new Log(textures, 5, emit);
-		seatLeg4.setTransform(1.5f, 0.1f, 0.3f,
+		seatLeg4.setTransform(1.7f, 0.1f, 0.3f,
 	 						  0.1f, 0.1f, 0.1f,
 	 						  0.0f, 0.0f, 1.0f,
 	 						  90.0f);
 		// Add flat half cylinder on top of the two seat legs.
 		Bench	bench2 = new Bench(textures, 360, emit);
-		bench2.setTransform(1.5f, 0.23f, 0.0f,
+		bench2.setTransform(1.7f, 0.23f, 0.0f,
 	 					    0.1f, 0.1f, 0.5f,
 	 					    1.0f, 0.0f, 0.0f,
 	 					    90.0f);
 		
 		Log		seat8 = new Log(textures, 6, emit);
-		seat8.setTransform(0.9f, 0.1f, 1.2f,
+		seat8.setTransform(0.77f, 0.1f, 1.2f,
 				 		   0.1f, 0.1f, 0.1f,
 				 		   0.0f, 1.0f, 0.0f,
 				 		   90.0f);
 		
 		Log		seat9 = new Log(textures, 6, emit);
-		seat9.setTransform(0.0f, 0.1f, 1.3f,
+		seat9.setTransform(0.0f, 0.1f, 1.2f,
 				 		   0.1f, 0.1f, 0.1f,
 				 		   0.0f, 1.0f, 0.0f,
 				 		   90.0f);
@@ -461,7 +444,7 @@ public final class View
 		// Add stick to put marshmallows on.
 		Stick stick = new Stick(textures, 360, emit);
 		stick.setTransform(0.1f, 0.65f, 0.1f,
-				  		   0.001f, 0.3f, 0.001f,
+				  		   0.003f, 0.3f, 0.003f,
 				  		   0.0f, 1.0f, 0.0f,
 				  		   90.0f);
 		
@@ -476,7 +459,41 @@ public final class View
 		  		   			  0.2f, 0.1f, 0.2f,
 		  		   			  0.0f, 0.0f, 4.0f,
 		  		   			  90.0f);
-
+		
+		// Work on tool box that is a cube.
+		ToolBox toolBox1 = new ToolBox(textures, emit);
+		toolBox1.setTransform(-0.4f, 0.2f, -1.7f,
+	   			  			  0.5f, 0.5f, 0.5f,
+	   			  			  0.0f, 1.0f, 0.0f,
+	   			  			  90.0f);
+		ToolBox toolBox2 = new ToolBox(textures, emit);
+		toolBox2.setTransform(0.1f, 0.2f, -1.7f,
+	   			  			  0.5f, 0.5f, 0.5f,
+	   			  			  0.0f, 1.0f, 0.0f,
+	   			  			  90.0f);
+		ToolBox toolBox3 = new ToolBox(textures, emit);
+		toolBox3.setTransform(0.6f, 0.2f, -1.7f,
+	   			  			  0.5f, 0.5f, 0.5f,
+	   			  			  0.0f, 1.0f, 0.0f,
+	   			  			  90.0f);
+		
+		// Hour glass.
+		HourGlass hourGlass1 = new HourGlass(textures, 360, emit);
+		hourGlass1.setTransform(0.77f, 0.3f, 1.2f,
+		  		   		  		0.1f, 0.1f, 0.1f,
+		  		   		  		0.0f, 1.0f, 0.0f,
+		  		   		  		90.0f);
+		HourGlass hourGlass2 = new HourGlass(textures, 360, emit);
+		hourGlass2.setTransform(0.0f, 0.3f, 1.2f,
+		  		   		  		0.1f, 0.1f, 0.1f,
+		  		   		  		0.0f, 1.0f, 0.0f,
+		  		   		  		90.0f);
+		HourGlass hourGlass3 = new HourGlass(textures, 4, emit);
+		hourGlass3.setTransform(0.6f, 0.55f, -1.7f,
+		  		   		  		0.1f, 0.1f, 0.1f,
+		  		   		  		0.0f, 1.0f, 0.0f,
+		  		   		  		90.0f);
+		
 		// Add them to the scene graph
 		root.add(log1);
 		root.add(log2);
@@ -487,9 +504,6 @@ public final class View
 		root.add(seatLeg1);
 		root.add(seatLeg2);
 		root.add(bench1);
-		root.add(seat3);
-		root.add(seat4);
-		root.add(seat5);
 		root.add(seatLeg3);
 		root.add(seatLeg4);
 		root.add(bench2);
@@ -500,6 +514,12 @@ public final class View
 		root.add(stick);
 		root.add(flagPole);
 		root.add(windSock);
+		root.add(toolBox1);
+		root.add(toolBox2);
+		root.add(toolBox3);
+		root.add(hourGlass1);
+		root.add(hourGlass2);
+		root.add(hourGlass3);
 		root.add(thing);
 	}
 
@@ -560,7 +580,7 @@ public final class View
 		renderer.draw("Camera Distance = " + model.getCameraDistance(), 2, h - 24);
 		renderer.draw("Focal Point Height = " + model.getFocalPointHeight(), 2, h - 36);
 		renderer.draw("Scene Rotation Amount = " + model.getSceneRotationAmount(), 2, h - 48);
-		renderer.draw("Scene Rotation Rate = " + model.getCameraDistance(), 2, h - 60);
+		renderer.draw("Scene Rotation Rate = " + model.getSceneRotationRate(), 2, h - 60);
 
 		renderer.endRendering();
 	}
@@ -678,9 +698,9 @@ public final class View
 	// Wind sock object.
 	public static final class WindSock extends Node
 	{
-		private final int		sides;			// Allow logs to look jagged
-		private final float[]	emit;			// Allow logs to glow dimly
-		private final Cylinder	cylinder;		// Geometry for the log
+		private final int		sides;			// Allow wind sock to look jagged
+		private final float[]	emit;			// Allow wind sock to glow dimly
+		private final Cylinder	cylinder;		// Geometry for the wind sock
 
 		public WindSock(Texture[] textures, int sides, float[] emit)
 		{
@@ -715,10 +735,10 @@ public final class View
 	// Pole object.
 	public static final class Pole extends Node
 	{
-		private final int		sides;			// Allow logs to look jagged
-		private final float[]	emit;			// Allow logs to glow dimly
+		private final int		sides;			// Allow pole to look jagged
+		private final float[]	emit;			// Allow pole to glow dimly
 
-		private final Cylinder	cylinder;		// Geometry for the log
+		private final Cylinder	cylinder;		// Geometry for the pole
 
 		public Pole(Texture[] textures, int sides, float[] emit)
 		{
@@ -753,10 +773,10 @@ public final class View
 	// Stick object.
 	public static final class Stick extends Node
 	{
-		private final int		sides;			// Allow logs to look jagged
-		private final float[]	emit;			// Allow logs to glow dimly
+		private final int		sides;			// Allow stick to look jagged
+		private final float[]	emit;			// Allow stick to glow dimly
 
-		private final Cylinder	cylinder;		// Geometry for the log
+		private final Cylinder	cylinder;		// Geometry for the stick
 
 		public Stick(Texture[] textures, int sides, float[] emit)
 		{
@@ -791,10 +811,10 @@ public final class View
 	// Marshmallow object.
 	public static final class Marshmallow extends Node
 	{
-		private final int		sides;			// Allow logs to look jagged
-		private final float[]	emit;			// Allow logs to glow dimly
+		private final int		sides;			// Allow marshmallow to look jagged
+		private final float[]	emit;			// Allow marshmallow to glow dimly
 
-		private final Cylinder	cylinder;		// Geometry for the log
+		private final Cylinder	cylinder;		// Geometry for the marshmallow
 
 		public Marshmallow(Texture[] textures, int sides, float[] emit)
 		{
@@ -865,10 +885,10 @@ public final class View
 
 	public static final class Bench extends Node
 	{
-		private final int		sides;			// Allow logs to look jagged
-		private final float[]	emit;			// Allow logs to glow dimly
+		private final int		sides;			// Allow bench to look jagged
+		private final float[]	emit;			// Allow bench to glow dimly
 
-		private final Half_Cylinder	cylinder;		// Geometry for the log
+		private final Half_Cylinder	cylinder;		// Geometry for the bench
 
 		public Bench(Texture[] textures, int sides, float[] emit)
 		{
@@ -897,6 +917,77 @@ public final class View
 		public int getSides()
 		{
 			return sides;
+		}
+	}
+	
+	public static final class HourGlass extends Node
+	{
+		private final int		sides;			// Allow tent to look jagged
+		private final float[]	emit;			// Allow tent to glow dimly
+
+		private final Cone	cone;		// Geometry for the bench
+
+		public HourGlass(Texture[] textures, int sides, float[] emit)
+		{
+			super (textures);
+
+			this.sides = sides;
+			this.emit = emit;
+
+			cone = new Cone(sides, -1.0f, 1.0f);
+		}
+
+		protected void	change(GL2 gl)
+		{
+			// The tent just sits there, unchanging. Nothing to do...yet?
+		}
+
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cone.fill(gl, textures[12]);		// Around sides
+			cone.fillFoot(gl, textures[7]);	// Bottom end
+			cone.fillHead(gl, textures[7]);	// Top end
+		}
+		
+		public int getSides()
+		{
+			return sides;
+		}
+	}
+	
+	// A tool box that is represented as a cube.
+	public static final class ToolBox extends Node
+	{
+		private final float[] emit;		// Allow tool box to glow dimly.
+		
+		private final Cube cube;		// Geometry for the tool box.
+		
+		public ToolBox(Texture[] textures, float[] emit)
+		{
+			super(textures);
+			
+			this.emit = emit;
+			
+			cube = new Cube();
+		}
+		
+		protected void	change(GL2 gl)
+		{
+			// The tool box just sits there, unchanging. Nothing to do...yet?
+		}
+		
+		public void	depict(GL2 gl)
+		{
+			Lighting.setMaterial(gl, null, null, null, null, emit);
+
+			cube.fillFace(gl, 0, textures[11]);
+			cube.fillFace(gl, 1, textures[11]);
+			cube.fillFace(gl, 2, textures[11]);
+			cube.fillFace(gl, 3, textures[10]); // Front of chest.
+			cube.fillFace(gl, 4, textures[9]); // Top of chest.
+			cube.fillFace(gl, 5, textures[9]); // Bottom chest.
 		}
 	}
 

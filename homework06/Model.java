@@ -144,6 +144,15 @@ public final class Model
 			}
 		});;
 	}
+	
+	public void setSceneRotationRate(double v)
+	{
+		view.getCanvas().invoke(false, new BasicUpdater() {
+			public void	update(GL2 gl) {
+				sceneRotationRate += v;
+			}
+		});;
+	}
 
 
 	//**********************************************************************
